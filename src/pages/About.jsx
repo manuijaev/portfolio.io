@@ -52,7 +52,7 @@ export default function About() {
             Firebase.
           </li>
           <li>
-            Designed and developed a <strong>budget tracker app</strong> with
+            Designed and developed a <strong>bill splitter app</strong> with
             persistent storage and filtering features.
           </li>
           <li>
