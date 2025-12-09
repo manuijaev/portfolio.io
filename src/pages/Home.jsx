@@ -127,13 +127,6 @@ export default function Home() {
               }}
             />
             {/* Decorative elements */}
-            <motion.div
-              className="absolute -top-4 -right-4 w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center"
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-            >
-              <span className="text-white text-sm">👋</span>
-            </motion.div>
           </motion.div>
         </motion.div>
 
