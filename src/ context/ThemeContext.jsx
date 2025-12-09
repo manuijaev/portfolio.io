@@ -3,13 +3,11 @@ import { createContext, useContext, useState, useEffect } from "react";
 const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
-  const [theme, setTheme] = useState("light");
-
-  // Load theme from localStorage on mount
-  useEffect(() => {
+  // Initialize theme from localStorage or default to "light"
+  const [theme, setTheme] = useState(() => {
     const stored = localStorage.getItem("theme");
-    if (stored) setTheme(stored);
-  }, []);
+    return stored || "light";
+  });
 
   // Apply theme to <html> and save to localStorage
   useEffect(() => {

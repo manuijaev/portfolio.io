@@ -1,30 +1,11 @@
-import { useEffect } from "react";
 import { motion } from "framer-motion";
-import AOS from "aos";
-import "aos/dist/aos.css";
+import { FloatingParticles } from "../components/ParticleEffect";
+import SkillsVisualization from "../components/SkillsVisualization";
+import ExperienceTimeline from "../components/ExperienceTimeline";
+import { AnimatedStats } from "../components/AnimatedCounter";
 
 export default function About() {
-  useEffect(() => {
-    AOS.init({ duration: 700 });
-  }, []);
 
-  const skills = [
-    "HTML5 & CSS3",
-    "Tailwind CSS",
-    "JavaScript (ES6+)",
-    "React.js",
-    "Firebase",
-    "Git & GitHub",
-    "Python",
-    "Django",
-    "SQLite",
-    "RESTful APIs",
-    "Responsive Design",
-    "Problem Solving",
-    "Team Collaboration",
-    "Agile Methodologies",
-    "UI/UX Principles",
-  ];
 
   const achievements = [
     "Built and deployed House Hunter, a platform that connects tenants and landlords, featuring real-time data with Firebase.",
@@ -36,7 +17,8 @@ export default function About() {
   ];
 
   return (
-    <section className="py-12 px-6">
+    <section className="py-12 px-6 relative overflow-hidden">
+      <FloatingParticles count={15} />
 
       {/* Title */}
       <motion.h2
@@ -70,31 +52,19 @@ export default function About() {
         </p>
       </motion.div>
 
-      {/* Skills */}
-      <div className="max-w-4xl mx-auto mb-12">
-        <motion.h3
-          className="text-2xl font-semibold mb-4 text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
-          My Skills
-        </motion.h3>
+      {/* Stats */}
+      <div className="mb-12">
+        <AnimatedStats />
+      </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-          {skills.map((skill, idx) => (
-            <motion.div
-              key={idx}
-              whileHover={{ scale: 1.08 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15 }}
-              className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-200 
-              rounded-xl shadow-md p-6 flex items-center justify-center text-lg font-medium 
-              border border-transparent hover:border-indigo-500 hover:shadow-lg transition"
-            >
-              {skill}
-            </motion.div>
-          ))}
-        </div>
+      {/* Skills */}
+      <div className="mb-12">
+        <SkillsVisualization />
+      </div>
+
+      {/* Experience Timeline */}
+      <div className="mb-12">
+        <ExperienceTimeline />
       </div>
 
       {/* Achievements */}
