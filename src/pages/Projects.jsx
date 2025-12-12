@@ -6,10 +6,10 @@ export default function Projects() {
     {
       id: 1,
       title: "House Hunter Platform",
-      image: "/projects/house.png",
+      image: "public/projects/image.png",
       description:
         "A web app connecting tenants and landlords, allowing landlords to post houses with specifications and tenants to view listings and comment. NOTE, STILL UNDER DEVELOPMENT",
-      link: "https://house-hunter-six.vercel.app",
+      link: "https://house-hunter-ehq3.vercel.app/",
       technologies: ["React", "Node.js", "MongoDB"],
       type: "Web App"
     },
