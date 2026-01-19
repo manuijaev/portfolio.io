@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
+import { Briefcase, GraduationCap, Trophy, MapPin } from "lucide-react";
 
 const ExperienceTimeline = () => {
   const [expandedItems, setExpandedItems] = useState(new Set());
@@ -56,10 +57,10 @@ const ExperienceTimeline = () => {
 
   const getTypeIcon = (type) => {
     switch (type) {
-      case "work": return "💼";
-      case "education": return "🎓";
-      case "milestone": return "🏆";
-      default: return "📌";
+      case "work": return <Briefcase size={12} />;
+      case "education": return <GraduationCap size={12} />;
+      case "milestone": return <Trophy size={12} />;
+      default: return <MapPin size={12} />;
     }
   };
 
