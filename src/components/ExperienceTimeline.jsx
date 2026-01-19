@@ -25,9 +25,9 @@ const ExperienceTimeline = () => {
     {
       date: "2023",
       title: "Hands-on Training at Zindua School",
-      description: "Completed comprehensive training in frontend development fundamentals and modern frameworks.",
+      description: "Completed comprehensive training in frontend/backend fundamentals and modern frameworks.",
       type: "education",
-      details: "Covered HTML, CSS, JavaScript, React, and best practices for web development."
+      details: "Covered HTML, CSS, JavaScript, React,python,django,firebase and best practices for web development."
     },
     {
       date: "2022",

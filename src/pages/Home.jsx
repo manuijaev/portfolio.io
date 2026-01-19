@@ -62,7 +62,7 @@ export default function Home() {
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
             <motion.a
-              href="public/projects/emmanul kenyani cv.pdf"
+              href="/projects/kenyani's resume.pdf"
               download
               className="relative inline-block px-6 py-3 bg-blue-600 text-white rounded-lg shadow-xl overflow-hidden group"
               whileHover={{

@@ -15,7 +15,7 @@ const testimonials = [
     name: 'Jane Smith',
     role: 'Product Manager, InnovateInc',
     quote: 'Working with Emmanuel was a pleasure. He brought creativity and efficiency to our development process.',
-    photo: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+    photo: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150fit&=crop&crop=face',
   },
   {
     id: 3,
