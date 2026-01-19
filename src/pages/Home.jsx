@@ -114,7 +114,7 @@ export default function Home() {
         >
           <motion.div className="relative">
             <motion.img
-              src="public/projects/emmanuel.jpg"
+              src="/projects/emmanuel.jpg"
               alt="Emmanuel Kenyani"
               className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover shadow-2xl border-4 border-blue-500"
               animate={{
