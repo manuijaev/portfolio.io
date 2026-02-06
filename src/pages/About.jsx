@@ -13,7 +13,8 @@ export default function About() {
     "Completed hands-on training at Zindua School, covering frontend development fundamentals and modern frameworks.",
     "Collaborated with peers on open-source projects, focusing on clean UI design and reusable React components.",
     "Continuously learning and experimenting with new technologies to stay current with industry trends.",
-    "Developed a full-stack Smart Budget Dashboard that automates financial tracking by securely syncing with user bank accounts, providing real-time visual spending analytics and personalized budget alerts, empowering users to achieve their financial goals with clarity and confidence."
+    "Developed a full-stack Smart Budget Dashboard that automates financial tracking by securely syncing with user bank accounts, providing real-time visual spending analytics and personalized budget alerts, empowering users to achieve their financial goals with clarity and confidence.",
+    "A modern patrol management system with QR-based guard tracking, real-time reports, offline PWA support, and role-based accesss"
   ];
 
   return (

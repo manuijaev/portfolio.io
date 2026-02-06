@@ -10,8 +10,8 @@ export default function Projects() {
       description:
         "A web app connecting tenants and landlords, allowing landlords to post houses with specifications and tenants to view listings and comment. NOTE, STILL UNDER DEVELOPMENT",
       link: "https://house-hunter-ehq3.vercel.app/",
-      technologies: ["React", "Node.js", "MongoDB"],
-      type: "Web App"
+      technologies: ["Django", "React.js"],
+      type: "Website"
     },
     {
       id: 2,
@@ -21,7 +21,7 @@ export default function Projects() {
         "A budget tracker web app that records income and expenses, supports filtering and deletion, and persists data with cookies.",
       link: "https://manuijaev.github.io/bill-splliter/",
       technologies: ["JavaScript", "HTML", "CSS"],
-      type: "Web App"
+      type: "Website"
     },
     {
       id: 3,
@@ -30,7 +30,17 @@ export default function Projects() {
       description:
         "A single visual hub that categorizes spending, tracks goals, and gives financial clarity using a modern dashboard interface.",
       link: "https://smart-dash-mlb2.onrender.com/",
-      technologies: ["Python", "Flask", "Chart.js"],
+      technologies: ["Flask", "UI/UX Principles", "Python"],
+      type: "Dashboard"
+    },
+     {
+      id: 4,
+      title: "Patrolscan",
+      image: "public/projects/patrol.png",
+      description:
+        "A modern patrol management system with QR-based guard tracking, real-time reports, offline PWA support, and role-based access.",
+      link: "https://patrolscan.vercel.app/admin-login",
+      technologies: ["Node.js", "React.js"],
       type: "Dashboard"
     },
   ];

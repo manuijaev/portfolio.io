@@ -92,7 +92,7 @@ export default function Navbar() {
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 400, damping: 10 }}
           >
-            <motion.div
+            {/* <motion.div
               animate={{ rotate: [0, 10, -10, 0] }}
               transition={{ duration: 2, repeat: Infinity, repeatDelay: 5 }}
             >
@@ -101,13 +101,13 @@ export default function Navbar() {
                 className="text-blue-500 dark:text-blue-400" 
                 fill="currentColor"
               />
-            </motion.div>
-            <Link
+            </motion.div> */}
+            {/* <Link
               to="/"
               className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent"
             >
               Portfolio
-            </Link>
+            </Link> */}
           </motion.div>
 
           {/* Desktop Navigation */}

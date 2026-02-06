@@ -8,6 +8,7 @@ const skillsData = {
     { name: "Tailwind CSS", level: 85 },
     { name: "JavaScript (ES6+)", level: 80 },
     { name: "React.js", level: 85 },
+    { name: "Flask", level: 85 },
     { name: "Responsive Design", level: 90 },
     { name: "UI/UX Principles", level: 75 },
   ],
@@ -17,6 +18,7 @@ const skillsData = {
     { name: "SQLite", level: 70 },
     { name: "RESTful APIs", level: 80 },
     { name: "Firebase", level: 75 },
+    { name: "Node.js", level: 60 },
   ],
   Tools: [
     { name: "Git & GitHub", level: 90 },

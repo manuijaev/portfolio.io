@@ -132,9 +132,9 @@ export default function Home() {
 
       </section>
 
-      <AnimatedStats />
+      {/* <AnimatedStats /> */}
 
-      <Testimonials />
+      {/* <Testimonials /> */}
 
       {/* Particle Effects */}
       <ParticleEffect trigger={showParticles} />
