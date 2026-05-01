@@ -21,22 +21,144 @@ import { defaultPortfolioData } from "../data/portfolioDefaults";
 
 const PROJECT_TYPES = ["Software", "Dashboard", "Website", "PWA", "Native App", "API", "Other"];
 const TECHNOLOGY_OPTIONS = [
-  "React",
+  "HTML5",
+  "CSS3",
+  "Sass",
+  "Less",
+  "Tailwind CSS",
+  "Bootstrap",
+  "Material UI",
+  "Chakra UI",
+  "Ant Design",
   "JavaScript",
   "TypeScript",
-  "TailwindCSS",
-  "HTML",
-  "CSS",
+  "React",
+  "Next.js",
+  "Gatsby",
+  "Vue.js",
+  "Nuxt.js",
+  "Angular",
+  "Svelte",
+  "SvelteKit",
+  "SolidJS",
+  "Redux",
+  "Zustand",
+  "Recoil",
+  "React Query",
+  "GraphQL",
+  "Apollo",
+  "Relay",
+  "D3.js",
+  "Three.js",
+  "Framer Motion",
+  "GSAP",
+  "PWA",
+  "Service Workers",
+  "Webpack",
+  "Vite",
+  "Rollup",
+  "Babel",
   "Node.js",
-  "Express",
+  "Express.js",
+  "Fastify",
+  "NestJS",
+  "Koa",
   "Python",
   "Django",
   "Flask",
+  "FastAPI",
+  "Ruby on Rails",
+  "PHP",
+  "Laravel",
+  "CodeIgniter",
+  "Java",
+  "Spring Boot",
+  "Kotlin",
+  "C#",
+  ".NET",
+  "Go",
+  "Rust",
+  "C++",
+  "C",
   "PostgreSQL",
-  "Firebase",
+  "MySQL",
+  "MariaDB",
   "SQLite",
+  "MongoDB",
+  "Redis",
+  "Elasticsearch",
+  "Firebase",
+  "Supabase",
+  "Prisma",
+  "Sequelize",
+  "TypeORM",
+  "Mongoose",
   "REST API",
+  "OpenAPI",
+  "gRPC",
+  "WebSockets",
+  "Socket.IO",
+  "JWT",
+  "OAuth 2.0",
+  "Auth0",
+  "Clerk",
+  "Stripe",
+  "PayPal API",
+  "AWS",
+  "AWS Lambda",
+  "EC2",
+  "S3",
+  "CloudFront",
+  "Azure",
+  "Google Cloud",
+  "Cloud Functions",
+  "Docker",
+  "Kubernetes",
+  "Nginx",
+  "CI/CD",
+  "GitHub Actions",
+  "GitLab CI",
+  "Jenkins",
+  "Linux",
+  "Bash",
+  "PowerShell",
+  "Git",
+  "GitHub",
+  "Bitbucket",
+  "Figma",
+  "Adobe XD",
+  "UI/UX",
+  "Responsive Design",
+  "Accessibility (a11y)",
+  "Jest",
+  "Vitest",
+  "React Testing Library",
+  "Cypress",
+  "Playwright",
+  "Pytest",
+  "Postman",
+  "Insomnia",
+  "Microservices",
+  "Monorepo",
+  "Turborepo",
+  "Nx",
+  "Data Structures",
+  "Algorithms",
+  "Machine Learning",
+  "TensorFlow",
+  "Pandas",
+  "NumPy",
+  "OpenCV",
+  "Flutter",
+  "React Native",
+  "Expo",
+  "Swift",
+  "SwiftUI",
+  "Kotlin Multiplatform",
+  "Electron",
+  "Tauri",
 ];
+const SKILL_CATEGORIES = ["Frontend", "Backend", "Database", "Cloud", "DevOps", "Mobile", "AI/ML", "Tools", "General"];
 
 function getEmptyProject() {
   return {
@@ -132,6 +254,7 @@ export default function AdminDashboard() {
     updateHero,
     updateAbout,
     updateStats,
+    updateSkills,
     addProject,
     updateProject,
     deleteProject,
@@ -141,16 +264,32 @@ export default function AdminDashboard() {
 
   const [heroBio, setHeroBio] = useState(portfolioData.hero.bio);
   const [heroName, setHeroName] = useState(portfolioData.hero.headingName);
-  const [aboutIntro, setAboutIntro] = useState(portfolioData.about.intro);
+  const [aboutHeading, setAboutHeading] = useState(portfolioData.about.heading || "About Me");
+  const [aboutIntro, setAboutIntro] = useState(portfolioData.about.intro || "");
+  const [aboutStory, setAboutStory] = useState(portfolioData.about.story || "");
+  const [aboutAchievementsDraft, setAboutAchievementsDraft] = useState(
+    Array.isArray(portfolioData.about.achievements) ? portfolioData.about.achievements : []
+  );
+  const [newAchievement, setNewAchievement] = useState("");
   const [profileImage, setProfileImage] = useState(portfolioData.hero.profileImage);
   const [heroRolesText, setHeroRolesText] = useState(portfolioData.hero.typewriterRoles.join("\n"));
   const [projectForm, setProjectForm] = useState(getEmptyProject());
+  const [technologySearch, setTechnologySearch] = useState("");
+  const [customTechnology, setCustomTechnology] = useState("");
+  const [skillsDraft, setSkillsDraft] = useState(
+    (portfolioData.skills || []).map((skill) => ({ ...skill }))
+  );
+  const [skillForm, setSkillForm] = useState({ name: "", category: "Frontend", experience: 60 });
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [status, setStatus] = useState("");
   const heroImageInputRef = useRef(null);
 
   const statsForm = useMemo(() => portfolioData.stats.map((item) => ({ ...item })), [portfolioData.stats]);
   const [statsDraft, setStatsDraft] = useState(statsForm);
+  const filteredTechnologyOptions = useMemo(() => {
+    const query = technologySearch.trim().toLowerCase();
+    return TECHNOLOGY_OPTIONS.filter((tech) => tech.toLowerCase().includes(query)).slice(0, 80);
+  }, [technologySearch]);
 
   const handleProjectImageUpload = (event) => {
     const file = event.target.files?.[0];
@@ -216,12 +355,25 @@ export default function AdminDashboard() {
         .map((role) => role.trim())
         .filter(Boolean),
     });
-    const aboutResult = updateAbout({ intro: aboutIntro });
-    if (!heroResult?.success || !aboutResult?.success) {
-      setStatus(heroResult?.message || aboutResult?.message || "Failed to save text content.");
+    if (!heroResult?.success) {
+      setStatus(heroResult?.message || "Failed to save hero content.");
       return;
     }
-    setStatus("Text content saved.");
+    setStatus("Hero content saved.");
+  };
+
+  const persistAboutContent = () => {
+    const result = updateAbout({
+      heading: aboutHeading.trim() || "About Me",
+      intro: aboutIntro.trim(),
+      story: aboutStory.trim(),
+      achievements: aboutAchievementsDraft.map((item) => String(item || "").trim()).filter(Boolean),
+    });
+    if (!result?.success) {
+      setStatus(result?.message || "Failed to save about content.");
+      return;
+    }
+    setStatus("About content saved.");
   };
 
   const persistStats = () => {
@@ -231,6 +383,55 @@ export default function AdminDashboard() {
       return;
     }
     setStatus("Stats saved.");
+  };
+
+  const persistSkills = () => {
+    const sanitizedSkills = skillsDraft
+      .map((skill, index) => ({
+        id: Number(skill.id) || index + 1,
+        name: String(skill.name || "").trim(),
+        category: String(skill.category || "General").trim() || "General",
+        experience: Math.max(0, Math.min(100, Number(skill.experience) || 0)),
+      }))
+      .filter((skill) => skill.name);
+
+    const result = updateSkills(sanitizedSkills);
+    if (!result?.success) {
+      setStatus(result?.message || "Failed to save skills.");
+      return;
+    }
+    setSkillsDraft(sanitizedSkills);
+    setStatus("Skills saved.");
+  };
+
+  const addSkillDraft = () => {
+    const name = skillForm.name.trim();
+    if (!name) {
+      setStatus("Please enter a skill name before adding.");
+      return;
+    }
+    const nextId = skillsDraft.reduce((max, skill) => Math.max(max, Number(skill.id) || 0), 0) + 1;
+    setSkillsDraft((prev) => [
+      ...prev,
+      {
+        id: nextId,
+        name,
+        category: skillForm.category || "General",
+        experience: Math.max(0, Math.min(100, Number(skillForm.experience) || 0)),
+      },
+    ]);
+    setSkillForm({ name: "", category: skillForm.category || "Frontend", experience: 60 });
+  };
+
+  const addCustomTechnologyToProject = () => {
+    const tech = customTechnology.trim();
+    if (!tech) return;
+    setProjectForm((prev) => {
+      const hasTech = prev.technologies.some((item) => item.toLowerCase() === tech.toLowerCase());
+      if (hasTech) return prev;
+      return { ...prev, technologies: [...prev.technologies, tech] };
+    });
+    setCustomTechnology("");
   };
 
   const handleHeroImageUpload = (event) => {
@@ -350,11 +551,19 @@ export default function AdminDashboard() {
                   resetPortfolioData();
                   setHeroBio(defaultPortfolioData.hero.bio);
                   setHeroName(defaultPortfolioData.hero.headingName);
+                  setAboutHeading(defaultPortfolioData.about.heading || "About Me");
                   setAboutIntro(defaultPortfolioData.about.intro);
+                  setAboutStory(defaultPortfolioData.about.story || "");
+                  setAboutAchievementsDraft(defaultPortfolioData.about.achievements || []);
+                  setNewAchievement("");
                   setProfileImage(defaultPortfolioData.hero.profileImage);
                   setHeroRolesText(defaultPortfolioData.hero.typewriterRoles.join("\n"));
                   setStatsDraft(defaultPortfolioData.stats);
+                  setSkillsDraft((defaultPortfolioData.skills || []).map((skill) => ({ ...skill })));
+                  setSkillForm({ name: "", category: "Frontend", experience: 60 });
                   setProjectForm(getEmptyProject());
+                  setTechnologySearch("");
+                  setCustomTechnology("");
                   setEditingProjectId(null);
                   setStatus("Reset to defaults.");
                 }}
@@ -440,15 +649,6 @@ export default function AdminDashboard() {
                   </div>
                 </div>
 
-                <div className="sm:col-span-2 md:col-span-1">
-                  <FieldLabel>About Intro</FieldLabel>
-                  <TextareaBase
-                    rows="4"
-                    value={aboutIntro}
-                    onChange={(event) => setAboutIntro(event.target.value)}
-                  />
-                </div>
-
                 <div className="sm:col-span-2">
                   <button
                     onClick={persistTextContent}
@@ -497,6 +697,193 @@ export default function AdminDashboard() {
               </div>
             </Panel>
           </div>
+        </div>
+
+        <div className="grid gap-6 xl:grid-cols-2">
+          <Panel icon={FileText} title="About Manager" subtitle="CRUD your entire About Me section">
+            <div className="space-y-3">
+              <div>
+                <FieldLabel>About Heading</FieldLabel>
+                <InputBase value={aboutHeading} onChange={(event) => setAboutHeading(event.target.value)} />
+              </div>
+              <div>
+                <FieldLabel>Intro</FieldLabel>
+                <TextareaBase rows="4" value={aboutIntro} onChange={(event) => setAboutIntro(event.target.value)} />
+              </div>
+              <div>
+                <FieldLabel>Story</FieldLabel>
+                <TextareaBase rows="4" value={aboutStory} onChange={(event) => setAboutStory(event.target.value)} />
+              </div>
+              <div className="rounded-xl border border-slate-300/90 dark:border-slate-600 p-3 bg-white/80 dark:bg-slate-950/50">
+                <FieldLabel>Achievements</FieldLabel>
+                <div className="flex gap-2 mb-3">
+                  <InputBase
+                    value={newAchievement}
+                    onChange={(event) => setNewAchievement(event.target.value)}
+                    placeholder="Add achievement"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const value = newAchievement.trim();
+                      if (!value) return;
+                      setAboutAchievementsDraft((prev) => [...prev, value]);
+                      setNewAchievement("");
+                    }}
+                    className="rounded-lg bg-cyan-600 px-3 py-2 text-xs font-semibold text-white hover:bg-cyan-700"
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="space-y-2 max-h-44 overflow-auto pr-1">
+                  {aboutAchievementsDraft.map((achievement, index) => (
+                    <div key={`${achievement}-${index}`} className="grid grid-cols-[1fr_auto] gap-2">
+                      <InputBase
+                        value={achievement}
+                        onChange={(event) =>
+                          setAboutAchievementsDraft((prev) =>
+                            prev.map((item, idx) => (idx === index ? event.target.value : item))
+                          )
+                        }
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setAboutAchievementsDraft((prev) => prev.filter((_, idx) => idx !== index))
+                        }
+                        className="rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-700"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <button
+                onClick={persistAboutContent}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+              >
+                <Save size={16} />
+                Save About Content
+              </button>
+            </div>
+          </Panel>
+
+          <Panel icon={BarChart3} title="Skills Manager" subtitle="CRUD skills and throttle experience level">
+            <div className="space-y-3">
+              <div className="grid gap-2 sm:grid-cols-[1.2fr_0.8fr]">
+                <InputBase
+                  value={skillForm.name}
+                  onChange={(event) => setSkillForm((prev) => ({ ...prev, name: event.target.value }))}
+                  placeholder="Skill name"
+                />
+                <select
+                  value={skillForm.category}
+                  onChange={(event) => setSkillForm((prev) => ({ ...prev, category: event.target.value }))}
+                  className="w-full rounded-xl border border-slate-300/90 dark:border-slate-600 px-3.5 py-2.5 bg-white/90 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 outline-none transition focus:ring-2 focus:ring-emerald-500/60 focus:border-emerald-500"
+                >
+                  {SKILL_CATEGORIES.map((category) => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="rounded-xl border border-slate-300/90 dark:border-slate-600 p-3 bg-white/80 dark:bg-slate-950/50">
+                <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300 mb-2">
+                  <span>Experience Level</span>
+                  <span>{skillForm.experience}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="0"
+                  max="100"
+                  step="1"
+                  value={skillForm.experience}
+                  onChange={(event) =>
+                    setSkillForm((prev) => ({ ...prev, experience: Number(event.target.value) }))
+                  }
+                  className="w-full accent-emerald-600"
+                />
+              </div>
+              <button
+                type="button"
+                onClick={addSkillDraft}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-700"
+              >
+                <PlusCircle size={16} />
+                Add Skill
+              </button>
+              <div className="space-y-2 max-h-72 overflow-auto pr-1">
+                {skillsDraft.map((skill, index) => (
+                  <div key={skill.id || index} className="rounded-xl border border-slate-300/90 dark:border-slate-600 p-3 bg-white/80 dark:bg-slate-950/50">
+                    <div className="grid gap-2 sm:grid-cols-[1fr_0.8fr_auto]">
+                      <InputBase
+                        value={skill.name}
+                        onChange={(event) =>
+                          setSkillsDraft((prev) =>
+                            prev.map((item, idx) => (idx === index ? { ...item, name: event.target.value } : item))
+                          )
+                        }
+                      />
+                      <select
+                        value={skill.category}
+                        onChange={(event) =>
+                          setSkillsDraft((prev) =>
+                            prev.map((item, idx) =>
+                              idx === index ? { ...item, category: event.target.value } : item
+                            )
+                          )
+                        }
+                        className="w-full rounded-xl border border-slate-300/90 dark:border-slate-600 px-3.5 py-2.5 bg-white/90 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 outline-none transition focus:ring-2 focus:ring-emerald-500/60 focus:border-emerald-500"
+                      >
+                        {SKILL_CATEGORIES.map((category) => (
+                          <option key={category} value={category}>
+                            {category}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={() => setSkillsDraft((prev) => prev.filter((_, idx) => idx !== index))}
+                        className="rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-700"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                    <div className="mt-2">
+                      <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
+                        <span>Experience (Throttle)</span>
+                        <span>{Number(skill.experience) || 0}%</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="0"
+                        max="100"
+                        step="1"
+                        value={Number(skill.experience) || 0}
+                        onChange={(event) =>
+                          setSkillsDraft((prev) =>
+                            prev.map((item, idx) =>
+                              idx === index ? { ...item, experience: Number(event.target.value) } : item
+                            )
+                          )
+                        }
+                        className="w-full accent-emerald-600"
+                      />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                onClick={persistSkills}
+                className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+              >
+                <Save size={16} />
+                Save Skills
+              </button>
+            </div>
+          </Panel>
         </div>
 
         <Panel icon={FolderKanban} title="Projects Manager" subtitle="Create and edit portfolio projects">
@@ -570,7 +957,28 @@ export default function AdminDashboard() {
               <div className="sm:col-span-2">
                 <FieldLabel>Technologies Used</FieldLabel>
                 <div className="flex flex-wrap gap-2 rounded-xl border border-slate-300/90 dark:border-slate-600 bg-white/90 dark:bg-slate-950/60 p-3">
-                  {TECHNOLOGY_OPTIONS.map((technology) => {
+                  <div className="w-full grid gap-2 sm:grid-cols-[1fr_auto]">
+                    <InputBase
+                      value={technologySearch}
+                      onChange={(event) => setTechnologySearch(event.target.value)}
+                      placeholder="Search technologies (React, Docker, AWS, Flutter...)"
+                    />
+                    <div className="flex gap-2">
+                      <InputBase
+                        value={customTechnology}
+                        onChange={(event) => setCustomTechnology(event.target.value)}
+                        placeholder="Custom tech"
+                      />
+                      <button
+                        type="button"
+                        onClick={addCustomTechnologyToProject}
+                        className="rounded-lg bg-cyan-600 px-3 py-2 text-xs font-semibold text-white hover:bg-cyan-700"
+                      >
+                        Add
+                      </button>
+                    </div>
+                  </div>
+                  {(technologySearch ? filteredTechnologyOptions : TECHNOLOGY_OPTIONS.slice(0, 120)).map((technology) => {
                     const selected = projectForm.technologies.includes(technology);
                     return (
                       <button

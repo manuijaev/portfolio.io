@@ -14,14 +14,35 @@ export const defaultPortfolioData = {
     profileImage: "/projects/me.png",
   },
   about: {
+    heading: "About Me",
     intro:
       "Hi, I’m Emmanuel Kenyani, a passionate Junior Software Developer. I enjoy turning ideas into real-world solutions by leveraging modern technologies. My main focus has been web development, where I have gained hands-on experience with HTML, CSS, TailwindCSS, JavaScript, React, Python, Django, SQLite, and Firebase. My goal is to keep learning and contribute to impactful projects that improve lives.",
+    story:
+      "I build practical products with strong UI clarity and dependable backend behavior. I enjoy owning features end-to-end, from wireframe and architecture decisions to deployment and iteration.",
+    achievements: [
+      "Built and deployed House Hunter, a platform connecting tenants and landlords with dynamic listings.",
+      "Designed and developed a bill splitter app with persistent storage and filtering features.",
+      "Completed hands-on training at Zindua School covering modern frontend and backend workflows.",
+      "Continuously improve through personal projects, collaboration, and real-world problem solving.",
+    ],
   },
   stats: [
     { label: "Projects Completed", value: 8, suffix: "+" },
     { label: "Happy Clients", value: 1, suffix: "+" },
     { label: "Years Experience", value: 2, suffix: "+" },
     { label: "Technologies", value: 10, suffix: "+" },
+  ],
+  skills: [
+    { id: 1, name: "React", category: "Frontend", experience: 86 },
+    { id: 2, name: "Tailwind CSS", category: "Frontend", experience: 84 },
+    { id: 3, name: "JavaScript", category: "Frontend", experience: 82 },
+    { id: 4, name: "TypeScript", category: "Frontend", experience: 70 },
+    { id: 5, name: "Node.js", category: "Backend", experience: 74 },
+    { id: 6, name: "Django", category: "Backend", experience: 76 },
+    { id: 7, name: "Flask", category: "Backend", experience: 72 },
+    { id: 8, name: "PostgreSQL", category: "Database", experience: 68 },
+    { id: 9, name: "Firebase", category: "Cloud", experience: 78 },
+    { id: 10, name: "Git & GitHub", category: "Tools", experience: 88 },
   ],
   projects: [
     {
@@ -53,6 +74,23 @@ export const defaultPortfolioData = {
       link: "https://smart-dash-mlb2.onrender.com/",
       technologies: ["Flask", "UI/UX Principles", "Python"],
       type: "Dashboard",
+      caseStudy: {
+        problem:
+          "Designing a dashboard that stays simple while displaying rich financial data.",
+        approach:
+          "Built category-level spending views with clear hierarchy and progressive disclosure so users can see detail without feeling overwhelmed.",
+        outcome:
+          "Delivered a clean and responsive budgeting interface that supports decision-making across different spending behaviors.",
+        architecture:
+          "Separated budgeting logic, visualization components, and interaction handling to keep the system maintainable during rapid iteration.",
+        challenges: [
+          "Designing a dashboard that stays simple while displaying rich financial data.",
+          "Balancing visual clarity with detailed category-level spending insights.",
+          "Keeping budgeting logic accurate across different user spending patterns.",
+          "Maintaining a clean codebase while iterating quickly on UI and features.",
+          "Ensuring the interface feels responsive and readable on multiple screen sizes.",
+        ],
+      },
     },
     {
       id: 4,

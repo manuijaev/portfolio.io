@@ -11,6 +11,28 @@ const ADMIN_CREDENTIALS = {
 
 const PortfolioContext = createContext();
 
+function normalizeAbout(about) {
+  const source = about && typeof about === "object" ? about : {};
+  return {
+    heading: String(source.heading || defaultPortfolioData.about.heading || "About Me"),
+    intro: String(source.intro || defaultPortfolioData.about.intro || ""),
+    story: String(source.story || defaultPortfolioData.about.story || ""),
+    achievements: Array.isArray(source.achievements)
+      ? source.achievements.map((item) => String(item || "").trim()).filter(Boolean)
+      : defaultPortfolioData.about.achievements || [],
+  };
+}
+
+function normalizeSkill(skill, fallbackId = 1) {
+  const source = skill && typeof skill === "object" ? skill : {};
+  return {
+    id: Number(source.id) || fallbackId,
+    name: String(source.name || ""),
+    category: String(source.category || "General"),
+    experience: Math.max(0, Math.min(100, Number(source.experience) || 0)),
+  };
+}
+
 function normalizeCaseStudy(caseStudy, project = {}) {
   const source = caseStudy && typeof caseStudy === "object" ? caseStudy : {};
   const fallbackTitle = String(project?.title || "this project");
@@ -71,11 +93,13 @@ function normalizeProject(project, fallbackId = 1) {
 function normalizePortfolioData(input) {
   const source = input && typeof input === "object" ? input : defaultPortfolioData;
   const projectsSource = Array.isArray(source.projects) ? source.projects : defaultPortfolioData.projects;
+  const skillsSource = Array.isArray(source.skills) ? source.skills : defaultPortfolioData.skills;
 
   return {
     hero: { ...defaultPortfolioData.hero, ...(source.hero || {}) },
-    about: { ...defaultPortfolioData.about, ...(source.about || {}) },
+    about: normalizeAbout(source.about),
     stats: Array.isArray(source.stats) ? source.stats : defaultPortfolioData.stats,
+    skills: skillsSource.map((skill, index) => normalizeSkill(skill, index + 1)),
     projects: projectsSource.map((project, index) => normalizeProject(project, index + 1)),
   };
 }
@@ -146,6 +170,15 @@ export function PortfolioProvider({ children }) {
     return persistPortfolioData((prev) => ({
       ...prev,
       stats: nextStats,
+    }));
+  };
+
+  const updateSkills = (nextSkills) => {
+    return persistPortfolioData((prev) => ({
+      ...prev,
+      skills: Array.isArray(nextSkills)
+        ? nextSkills.map((skill, index) => normalizeSkill(skill, index + 1))
+        : prev.skills,
     }));
   };
 
@@ -228,6 +261,7 @@ export function PortfolioProvider({ children }) {
       updateHero,
       updateAbout,
       updateStats,
+      updateSkills,
       addProject,
       updateProject,
       deleteProject,
