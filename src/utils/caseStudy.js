@@ -63,3 +63,27 @@ export function formatBytes(bytes) {
   }
   return `${size.toFixed(size >= 10 || index === 0 ? 0 : 1)} ${units[index]}`;
 }
+
+export function getProjectLink(project) {
+  const raw = String(project?.link || "").trim();
+  if (!raw) return "";
+
+  const candidate = /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+
+  try {
+    const parsed = new URL(candidate);
+    const host = parsed.hostname;
+    const isLocalhost = host === "localhost";
+    const isIPv4 = /^(\d{1,3}\.){3}\d{1,3}$/.test(host);
+    const isIPv6 = host.includes(":");
+    const hasDomainDot = host.includes(".");
+
+    if (!isLocalhost && !isIPv4 && !isIPv6 && !hasDomainDot) {
+      return "";
+    }
+
+    return parsed.toString();
+  } catch {
+    return "";
+  }
+}

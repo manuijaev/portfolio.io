@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { usePortfolio } from "../ context/PortfolioContext";
 import { defaultPortfolioData } from "../data/portfolioDefaults";
+import { getProjectLink } from "../utils/caseStudy";
 
 const PROJECT_TYPES = ["Software", "Dashboard", "Website", "PWA", "Native App", "API", "Other"];
 const TECHNOLOGY_OPTIONS = [
@@ -447,12 +448,13 @@ export default function AdminDashboard() {
   };
 
   const handleProjectSave = () => {
+    const normalizedProjectLink = getProjectLink({ link: projectForm.link });
     const payload = {
       title: projectForm.title.trim(),
       image: projectForm.image,
       imageName: projectForm.imageName,
       description: projectForm.description.trim(),
-      link: projectForm.link.trim(),
+      link: normalizedProjectLink,
       technologies: projectForm.technologies,
       type: projectForm.type.trim() || "Website",
       caseStudy: {
@@ -469,7 +471,7 @@ export default function AdminDashboard() {
     };
 
     if (!payload.title || !payload.image || !payload.description || !payload.link) {
-      setStatus("Please fill all project fields before saving.");
+      setStatus("Please fill all project fields and provide a valid live URL (e.g. https://example.com).");
       return;
     }
 

@@ -3,7 +3,7 @@ import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, CheckCircle2, Clapperboard, Cpu, Layers, Target } from "lucide-react";
 import { usePortfolio } from "../ context/PortfolioContext";
-import { buildCaseStudy, formatBytes, getProjectVideo } from "../utils/caseStudy";
+import { buildCaseStudy, formatBytes, getProjectLink, getProjectVideo } from "../utils/caseStudy";
 
 const MotionDiv = motion.div;
 
@@ -20,6 +20,7 @@ export default function ProjectCaseStudy() {
 
   const caseStudy = buildCaseStudy(project);
   const video = getProjectVideo(project);
+  const projectLink = getProjectLink(project);
 
   return (
     <section className="section-shell py-8 sm:py-12 min-h-screen">
@@ -57,15 +58,45 @@ export default function ProjectCaseStudy() {
           </div>
 
           <div className="mt-6">
-            <a
-              href={project.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-semibold px-4 py-2"
-            >
-              Visit Live Project
-            </a>
+            {projectLink ? (
+              <a
+                href={projectLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-semibold px-4 py-2"
+              >
+                Visit Live Project
+              </a>
+            ) : (
+              <p className="text-sm text-amber-700 dark:text-amber-300">
+                Add a valid project URL from the admin dashboard to enable the live preview.
+              </p>
+            )}
           </div>
+        </MotionDiv>
+
+        <MotionDiv
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 sm:p-6"
+        >
+          <h2 className="text-lg sm:text-xl font-semibold text-slate-900 dark:text-slate-100">Live Project Preview</h2>
+          {projectLink ? (
+            <div className="mt-3 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+              <iframe
+                title={`${project.title} live preview`}
+                src={projectLink}
+                loading="lazy"
+                className="w-full h-[520px] bg-white"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+          ) : (
+            <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">
+              No valid project URL is available to embed yet.
+            </p>
+          )}
         </MotionDiv>
 
         <div className="grid lg:grid-cols-2 gap-5 sm:gap-6">
