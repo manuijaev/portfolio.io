@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { defaultPortfolioData } from "../data/portfolioDefaults";
 
 const STORAGE_KEY = "portfolio_data_v1";
@@ -11,6 +11,31 @@ const ADMIN_CREDENTIALS = {
 
 const PortfolioContext = createContext();
 
+function normalizeProject(project, fallbackId = 1) {
+  return {
+    id: Number(project?.id) || fallbackId,
+    title: String(project?.title || ""),
+    image: String(project?.image || ""),
+    imageName: String(project?.imageName || ""),
+    description: String(project?.description || ""),
+    link: String(project?.link || ""),
+    technologies: Array.isArray(project?.technologies) ? project.technologies : [],
+    type: String(project?.type || "Website"),
+  };
+}
+
+function normalizePortfolioData(input) {
+  const source = input && typeof input === "object" ? input : defaultPortfolioData;
+  const projectsSource = Array.isArray(source.projects) ? source.projects : defaultPortfolioData.projects;
+
+  return {
+    hero: { ...defaultPortfolioData.hero, ...(source.hero || {}) },
+    about: { ...defaultPortfolioData.about, ...(source.about || {}) },
+    stats: Array.isArray(source.stats) ? source.stats : defaultPortfolioData.stats,
+    projects: projectsSource.map((project, index) => normalizeProject(project, index + 1)),
+  };
+}
+
 function safelyReadStorage(key, fallback) {
   try {
     const raw = localStorage.getItem(key);
@@ -22,16 +47,30 @@ function safelyReadStorage(key, fallback) {
 
 export function PortfolioProvider({ children }) {
   const [portfolioData, setPortfolioData] = useState(() =>
-    safelyReadStorage(STORAGE_KEY, defaultPortfolioData)
+    normalizePortfolioData(safelyReadStorage(STORAGE_KEY, defaultPortfolioData))
   );
   const [adminSession, setAdminSession] = useState(() =>
     safelyReadStorage(SESSION_KEY, { authenticated: false, email: "" })
   );
+  const portfolioDataRef = useRef(portfolioData);
+  const adminSessionRef = useRef(adminSession);
 
-  const persistPortfolioData = (nextData) => {
+  useEffect(() => {
+    portfolioDataRef.current = portfolioData;
+  }, [portfolioData]);
+
+  useEffect(() => {
+    adminSessionRef.current = adminSession;
+  }, [adminSession]);
+
+  const persistPortfolioData = (updater) => {
+    const nextData = normalizePortfolioData(
+      typeof updater === "function" ? updater(portfolioDataRef.current) : updater
+    );
     try {
       const serialized = JSON.stringify(nextData);
       localStorage.setItem(STORAGE_KEY, serialized);
+      portfolioDataRef.current = nextData;
       setPortfolioData(nextData);
       return { success: true };
     } catch (error) {
@@ -46,53 +85,55 @@ export function PortfolioProvider({ children }) {
   };
 
   const updateHero = (heroPatch) => {
-    return persistPortfolioData({
-      ...portfolioData,
-      hero: { ...portfolioData.hero, ...heroPatch },
-    });
+    return persistPortfolioData((prev) => ({
+      ...prev,
+      hero: { ...prev.hero, ...heroPatch },
+    }));
   };
 
   const updateAbout = (aboutPatch) => {
-    return persistPortfolioData({
-      ...portfolioData,
-      about: { ...portfolioData.about, ...aboutPatch },
-    });
+    return persistPortfolioData((prev) => ({
+      ...prev,
+      about: { ...prev.about, ...aboutPatch },
+    }));
   };
 
   const updateStats = (nextStats) => {
-    return persistPortfolioData({
-      ...portfolioData,
+    return persistPortfolioData((prev) => ({
+      ...prev,
       stats: nextStats,
-    });
+    }));
   };
 
   const addProject = (projectInput) => {
-    const maxId = portfolioData.projects.reduce((max, project) => Math.max(max, project.id), 0);
-    const newProject = { ...projectInput, id: maxId + 1 };
-    return persistPortfolioData({
-      ...portfolioData,
-      projects: [...portfolioData.projects, newProject],
+    return persistPortfolioData((prev) => {
+      const maxId = prev.projects.reduce((max, project) => Math.max(max, Number(project.id) || 0), 0);
+      const newProject = normalizeProject({ ...projectInput, id: maxId + 1 }, maxId + 1);
+      return {
+        ...prev,
+        projects: [...prev.projects, newProject],
+      };
     });
   };
 
   const updateProject = (projectId, projectPatch) => {
-    return persistPortfolioData({
-      ...portfolioData,
-      projects: portfolioData.projects.map((project) =>
-        project.id === projectId ? { ...project, ...projectPatch } : project
+    return persistPortfolioData((prev) => ({
+      ...prev,
+      projects: prev.projects.map((project) =>
+        project.id === projectId ? normalizeProject({ ...project, ...projectPatch }, project.id) : project
       ),
-    });
+    }));
   };
 
   const deleteProject = (projectId) => {
-    return persistPortfolioData({
-      ...portfolioData,
-      projects: portfolioData.projects.filter((project) => project.id !== projectId),
-    });
+    return persistPortfolioData((prev) => ({
+      ...prev,
+      projects: prev.projects.filter((project) => project.id !== projectId),
+    }));
   };
 
   const resetPortfolioData = () => {
-    return persistPortfolioData(defaultPortfolioData);
+    return persistPortfolioData(() => defaultPortfolioData);
   };
 
   const loginAdmin = ({ email, password }) => {
@@ -105,6 +146,7 @@ export function PortfolioProvider({ children }) {
     }
 
     const session = { authenticated: true, email: ADMIN_CREDENTIALS.email };
+    adminSessionRef.current = session;
     setAdminSession(session);
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
     return { success: true };
@@ -112,9 +154,29 @@ export function PortfolioProvider({ children }) {
 
   const logoutAdmin = () => {
     const session = { authenticated: false, email: "" };
+    adminSessionRef.current = session;
     setAdminSession(session);
     localStorage.setItem(SESSION_KEY, JSON.stringify(session));
   };
+
+  useEffect(() => {
+    const onStorage = (event) => {
+      if (event.key === STORAGE_KEY) {
+        const incoming = normalizePortfolioData(safelyReadStorage(STORAGE_KEY, defaultPortfolioData));
+        portfolioDataRef.current = incoming;
+        setPortfolioData(incoming);
+      }
+
+      if (event.key === SESSION_KEY) {
+        const incomingSession = safelyReadStorage(SESSION_KEY, { authenticated: false, email: "" });
+        adminSessionRef.current = incomingSession;
+        setAdminSession(incomingSession);
+      }
+    };
+
+    window.addEventListener("storage", onStorage);
+    return () => window.removeEventListener("storage", onStorage);
+  }, []);
 
   const value = useMemo(
     () => ({
