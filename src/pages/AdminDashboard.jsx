@@ -47,6 +47,17 @@ function getEmptyProject() {
     link: "",
     technologies: [],
     type: "Website",
+    caseStudyProblem: "",
+    caseStudyApproach: "",
+    caseStudyOutcome: "",
+    caseStudyArchitecture: "",
+    caseStudyChallengesText: "",
+    videoPresentation: {
+      src: "",
+      name: "",
+      type: "",
+      size: 0,
+    },
   };
 }
 
@@ -156,6 +167,36 @@ export default function AdminDashboard() {
     reader.readAsDataURL(file);
   };
 
+  const handleProjectVideoUpload = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith("video/")) {
+      setStatus("Please choose a valid video file.");
+      return;
+    }
+
+    if (file.size > 20 * 1024 * 1024) {
+      setStatus("Video is too large for browser storage. Use a video under 20MB.");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      setProjectForm((prev) => ({
+        ...prev,
+        videoPresentation: {
+          src: typeof reader.result === "string" ? reader.result : "",
+          name: file.name,
+          type: file.type,
+          size: file.size,
+        },
+      }));
+      setStatus("Video selected. Save project to persist.");
+    };
+    reader.readAsDataURL(file);
+  };
+
   const toggleTechnology = (technology) => {
     setProjectForm((prev) => ({
       ...prev,
@@ -213,6 +254,17 @@ export default function AdminDashboard() {
       link: projectForm.link.trim(),
       technologies: projectForm.technologies,
       type: projectForm.type.trim() || "Website",
+      caseStudy: {
+        problem: projectForm.caseStudyProblem.trim(),
+        approach: projectForm.caseStudyApproach.trim(),
+        outcome: projectForm.caseStudyOutcome.trim(),
+        architecture: projectForm.caseStudyArchitecture.trim(),
+        challenges: projectForm.caseStudyChallengesText
+          .split("\n")
+          .map((item) => item.trim())
+          .filter(Boolean),
+      },
+      videoPresentation: projectForm.videoPresentation,
     };
 
     if (!payload.title || !payload.image || !payload.description || !payload.link) {
@@ -242,6 +294,17 @@ export default function AdminDashboard() {
       link: project.link,
       technologies: project.technologies || [],
       type: project.type,
+      caseStudyProblem: project.caseStudy?.problem || "",
+      caseStudyApproach: project.caseStudy?.approach || "",
+      caseStudyOutcome: project.caseStudy?.outcome || "",
+      caseStudyArchitecture: project.caseStudy?.architecture || "",
+      caseStudyChallengesText: (project.caseStudy?.challenges || []).join("\n"),
+      videoPresentation: {
+        src: project.videoPresentation?.src || "",
+        name: project.videoPresentation?.name || "",
+        type: project.videoPresentation?.type || "",
+        size: Number(project.videoPresentation?.size) || 0,
+      },
     });
   };
 
@@ -537,6 +600,107 @@ export default function AdminDashboard() {
                 />
               </div>
 
+              <div className="sm:col-span-2 rounded-xl border border-slate-300/90 dark:border-slate-600 bg-white/80 dark:bg-slate-950/50 p-4">
+                <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-700 dark:text-slate-300 mb-3">
+                  Case Study Content
+                </h3>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="sm:col-span-2">
+                    <FieldLabel>Problem</FieldLabel>
+                    <TextareaBase
+                      rows="3"
+                      value={projectForm.caseStudyProblem}
+                      onChange={(event) =>
+                        setProjectForm((prev) => ({ ...prev, caseStudyProblem: event.target.value }))
+                      }
+                      placeholder="What core user or business problem did this project solve?"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <FieldLabel>Approach</FieldLabel>
+                    <TextareaBase
+                      rows="3"
+                      value={projectForm.caseStudyApproach}
+                      onChange={(event) =>
+                        setProjectForm((prev) => ({ ...prev, caseStudyApproach: event.target.value }))
+                      }
+                      placeholder="Describe your technical and product approach."
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <FieldLabel>Outcome</FieldLabel>
+                    <TextareaBase
+                      rows="3"
+                      value={projectForm.caseStudyOutcome}
+                      onChange={(event) =>
+                        setProjectForm((prev) => ({ ...prev, caseStudyOutcome: event.target.value }))
+                      }
+                      placeholder="What was delivered and what improved?"
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <FieldLabel>Architecture</FieldLabel>
+                    <TextareaBase
+                      rows="3"
+                      value={projectForm.caseStudyArchitecture}
+                      onChange={(event) =>
+                        setProjectForm((prev) => ({ ...prev, caseStudyArchitecture: event.target.value }))
+                      }
+                      placeholder="Summarize architecture and important technical decisions."
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <FieldLabel>Challenges (one per line)</FieldLabel>
+                    <TextareaBase
+                      rows="4"
+                      value={projectForm.caseStudyChallengesText}
+                      onChange={(event) =>
+                        setProjectForm((prev) => ({ ...prev, caseStudyChallengesText: event.target.value }))
+                      }
+                      placeholder={"Challenge 1\nChallenge 2\nChallenge 3"}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              <div className="sm:col-span-2 rounded-xl border border-dashed border-slate-300/90 dark:border-slate-600 bg-white/70 dark:bg-slate-950/40 p-3">
+                <FieldLabel>Upload Case Study Video (Optional)</FieldLabel>
+                <input
+                  type="file"
+                  accept="video/*"
+                  onChange={handleProjectVideoUpload}
+                  className="w-full text-sm text-slate-700 dark:text-slate-300 file:mr-4 file:rounded-lg file:border-0 file:bg-cyan-600 file:px-3 file:py-2 file:text-white hover:file:bg-cyan-700"
+                />
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  For reliable localStorage persistence, keep videos below 20MB.
+                </p>
+                {projectForm.videoPresentation?.src ? (
+                  <div className="mt-3 rounded-lg border border-slate-200 dark:border-slate-700 p-2">
+                    <video
+                      controls
+                      preload="metadata"
+                      src={projectForm.videoPresentation.src}
+                      className="w-full rounded-md bg-black"
+                    />
+                    <p className="mt-2 text-xs text-cyan-700 dark:text-cyan-300">
+                      {projectForm.videoPresentation.name || "Uploaded video"}
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setProjectForm((prev) => ({
+                          ...prev,
+                          videoPresentation: { src: "", name: "", type: "", size: 0 },
+                        }))
+                      }
+                      className="mt-2 text-xs font-medium text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
+                    >
+                      Remove Video
+                    </button>
+                  </div>
+                ) : null}
+              </div>
+
               <div className="sm:col-span-2 grid gap-2 sm:grid-cols-2">
                 <button
                   onClick={handleProjectSave}
@@ -581,6 +745,9 @@ export default function AdminDashboard() {
                           {project.description}
                         </p>
                         <p className="mt-1 text-[11px] font-medium text-emerald-600 dark:text-emerald-400">{project.type}</p>
+                        <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                          {project.videoPresentation?.src ? "Video uploaded" : "No video uploaded"}
+                        </p>
                       </div>
                     </div>
                     <div className="mt-3 grid grid-cols-2 gap-2">

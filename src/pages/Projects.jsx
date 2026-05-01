@@ -1,6 +1,13 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { usePortfolio } from "../ context/PortfolioContext";
+
+const MotionH2 = motion.h2;
+const MotionDiv = motion.div;
+const MotionImg = motion.img;
+const MotionP = motion.p;
+const MotionA = motion.a;
 
 export default function Projects() {
   const { portfolioData } = usePortfolio();
@@ -36,7 +43,7 @@ export default function Projects() {
       <div className="container mx-auto max-w-7xl">
 
         {/* Animated Section Title */}
-        <motion.h2
+        <MotionH2
           className="text-3xl sm:text-4xl font-bold text-center text-gray-900 dark:text-white mb-8 sm:mb-12"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -44,10 +51,10 @@ export default function Projects() {
           transition={{ duration: 0.6 }}
         >
           My Projects
-        </motion.h2>
+        </MotionH2>
 
         {/* Filters and Search */}
-        <motion.div
+        <MotionDiv
           className="mb-8 flex flex-col sm:flex-row gap-4 items-center justify-center"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -86,10 +93,10 @@ export default function Projects() {
               <option key={type} value={type}>{type}</option>
             ))}
           </select>
-        </motion.div>
+        </MotionDiv>
 
         {/* Grid layout - Responsive columns */}
-        <motion.div
+        <MotionDiv
           className="grid gap-6 sm:gap-8 md:gap-10 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -98,7 +105,7 @@ export default function Projects() {
         >
           <AnimatePresence>
             {filteredProjects.map((project) => (
-              <motion.div
+              <MotionDiv
                 key={project.id}
                 className="bg-white dark:bg-gray-800 rounded-xl sm:rounded-2xl shadow-lg sm:shadow-xl overflow-hidden flex flex-col cursor-pointer border border-gray-200 dark:border-gray-700"
                 initial={{ opacity: 0, y: 20 }}
@@ -114,7 +121,7 @@ export default function Projects() {
               >
                 {/* Image Container */}
                 <div className="overflow-hidden">
-                  <motion.img
+                  <MotionImg
                     src={project.image}
                     alt={project.title}
                     className="w-full h-40 sm:h-48 md:h-56 object-cover"
@@ -141,7 +148,7 @@ export default function Projects() {
                     </span>
                   </div>
 
-                  <motion.p
+                  <MotionP
                     className="text-sm sm:text-base text-gray-600 dark:text-gray-300 flex-grow leading-relaxed"
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
@@ -149,26 +156,36 @@ export default function Projects() {
                     transition={{ duration: 0.8, delay: 0.2 }}
                   >
                     {project.description}
-                  </motion.p>
+                  </MotionP>
 
-                  <motion.a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="mt-4 sm:mt-6 inline-block px-4 py-2 sm:px-5 sm:py-2.5 bg-blue-600 text-white text-sm sm:text-base font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
-                  >
-                    Visit Site
-                  </motion.a>
+                  <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                    <MotionA
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      whileHover={{ scale: 1.03 }}
+                      whileTap={{ scale: 0.97 }}
+                      className="inline-block px-4 py-2 sm:px-5 sm:py-2.5 bg-blue-600 text-white text-sm sm:text-base font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
+                    >
+                      Visit Site
+                    </MotionA>
+                    <MotionDiv whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+                      <Link
+                        to={`/projects/${project.id}/case-study`}
+                        className="inline-block w-full px-4 py-2 sm:px-5 sm:py-2.5 bg-slate-800 text-white text-sm sm:text-base font-medium rounded-lg hover:bg-slate-900 transition-colors text-center"
+                      >
+                        Case Study
+                      </Link>
+                    </MotionDiv>
+                  </div>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </AnimatePresence>
-        </motion.div>
+        </MotionDiv>
 
         {/* Optional: Add a call-to-action for mobile */}
-        <motion.div
+        <MotionDiv
           className="mt-8 sm:mt-12 text-center sm:hidden"
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -178,7 +195,7 @@ export default function Projects() {
           <p className="text-gray-600 dark:text-gray-400 text-sm">
             💡 Tap on projects to visit live sites
           </p>
-        </motion.div>
+        </MotionDiv>
       </div>
     </section>
   );

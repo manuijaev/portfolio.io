@@ -4,6 +4,7 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Projects from "./pages/Projects";
+import ProjectCaseStudy from "./pages/ProjectCaseStudy";
 import Contact from "./pages/Contact";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
@@ -26,6 +27,7 @@ export default function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
                 <Route path="/projects" element={<Projects />} />
+                <Route path="/projects/:projectId/case-study" element={<ProjectCaseStudy />} />
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route
@@ -47,4 +49,3 @@ export default function App() {
     </ThemeProvider>
   );
 }
-

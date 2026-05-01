@@ -11,8 +11,46 @@ const ADMIN_CREDENTIALS = {
 
 const PortfolioContext = createContext();
 
-function normalizeProject(project, fallbackId = 1) {
+function normalizeCaseStudy(caseStudy, project = {}) {
+  const source = caseStudy && typeof caseStudy === "object" ? caseStudy : {};
+  const fallbackTitle = String(project?.title || "this project");
+  const fallbackType = String(project?.type || "web product").toLowerCase();
+  const fallbackDescription = String(project?.description || "").trim();
+  const fallbackTech = Array.isArray(project?.technologies) ? project.technologies : [];
+
   return {
+    problem:
+      String(source.problem || "").trim() ||
+      `Build ${fallbackTitle} as a reliable ${fallbackType} that solves a clear user need while keeping the experience intuitive.`,
+    approach:
+      String(source.approach || "").trim() ||
+      `Implemented an iterative delivery plan using ${fallbackTech.join(", ") || "modern frontend and backend tools"} with frequent UI and logic refinements.`,
+    outcome:
+      String(source.outcome || "").trim() ||
+      `Shipped a production-ready experience with measurable usability improvements and a maintainable code structure.`,
+    architecture:
+      String(source.architecture || "").trim() ||
+      (fallbackDescription
+        ? `System summary: ${fallbackDescription}`
+        : "Structured the app into reusable UI components, service logic, and persistence layers for easier scaling."),
+    challenges: Array.isArray(source.challenges)
+      ? source.challenges.map((item) => String(item || "").trim()).filter(Boolean)
+      : [],
+  };
+}
+
+function normalizeVideoPresentation(videoPresentation) {
+  const source = videoPresentation && typeof videoPresentation === "object" ? videoPresentation : {};
+  return {
+    src: typeof source.src === "string" ? source.src : "",
+    name: typeof source.name === "string" ? source.name : "",
+    type: typeof source.type === "string" ? source.type : "",
+    size: Number(source.size) || 0,
+  };
+}
+
+function normalizeProject(project, fallbackId = 1) {
+  const normalizedProject = {
     id: Number(project?.id) || fallbackId,
     title: String(project?.title || ""),
     image: String(project?.image || ""),
@@ -21,6 +59,12 @@ function normalizeProject(project, fallbackId = 1) {
     link: String(project?.link || ""),
     technologies: Array.isArray(project?.technologies) ? project.technologies : [],
     type: String(project?.type || "Website"),
+  };
+
+  return {
+    ...normalizedProject,
+    caseStudy: normalizeCaseStudy(project?.caseStudy, normalizedProject),
+    videoPresentation: normalizeVideoPresentation(project?.videoPresentation),
   };
 }
 
