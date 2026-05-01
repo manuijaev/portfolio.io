@@ -3,8 +3,10 @@ import { FloatingParticles } from "../components/ParticleEffect";
 import SkillsVisualization from "../components/SkillsVisualization";
 import ExperienceTimeline from "../components/ExperienceTimeline";
 import { AnimatedStats } from "../components/AnimatedCounter";
+import { usePortfolio } from "../ context/PortfolioContext";
 
 export default function About() {
+  const { portfolioData } = usePortfolio();
 
 
   const achievements = [
@@ -18,12 +20,12 @@ export default function About() {
   ];
 
   return (
-    <section className="py-12 px-6 relative overflow-hidden">
+    <section className="section-shell py-12 relative overflow-hidden">
       <FloatingParticles count={15} />
 
       {/* Title */}
       <motion.h2
-        className="text-3xl font-bold text-center mb-8"
+        className="text-3xl sm:text-4xl font-bold text-center mb-8"
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -33,23 +35,13 @@ export default function About() {
 
       {/* Intro */}
       <motion.div
-        className="max-w-3xl mx-auto text-center mb-10"
+        className="max-w-3xl mx-auto mb-8"
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
       >
-        <p className="text-lg leading-relaxed text-gray-700 dark:text-gray-300">
-          Hi, I’m <span className="font-semibold">Emmanuel Kenyani</span>, a
-          passionate{" "}
-          <span className="text-indigo-600 dark:text-indigo-400">
-            Junior Software Developer
-          </span>.
-          I enjoy turning ideas into real-world solutions by leveraging modern
-          technologies. My main focus has been web development, where I have
-          gained hands-on experience with{" "}
-          <strong>HTML, CSS, TailwindCSS, JavaScript, React,python,django,sqlite and Firebase</strong>.
-          My goal is to keep learning and contribute to impactful projects that
-          improve lives.
+        <p className="text-left md:text-left text-base sm:text-lg leading-relaxed text-gray-700 dark:text-gray-300 max-w-2xl mx-auto md:mx-auto">
+          {portfolioData.about.intro}
         </p>
       </motion.div>
 

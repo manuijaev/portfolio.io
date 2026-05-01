@@ -37,13 +37,6 @@ const ExperienceTimeline = () => {
       type: "milestone",
       details: "Self-taught through online resources and built initial projects to understand core concepts."
     },
-    {
-      date: "2021",
-      title: "Open-Source Collaboration",
-      description: "Collaborated with peers on open-source projects, emphasizing clean UI design and reusable components.",
-      type: "milestone",
-      details: "Contributed to projects focusing on React components and UI/UX improvements."
-    }
   ];
 
   const getTypeColor = (type) => {

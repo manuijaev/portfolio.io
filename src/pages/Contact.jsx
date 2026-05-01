@@ -162,12 +162,12 @@ export default function Contact() {
   };
 
   return (
-    <section id="contact" className="py-12 sm:py-16 px-4 sm:px-6">
+    <section id="contact" className="section-shell py-12 sm:py-16">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
           Get In Touch
         </h2>
-        <p className={`text-center mb-8 sm:mb-12 text-base sm:text-lg px-4 ${
+        <p className={`copy-block text-base sm:text-lg mb-8 sm:mb-12 md:mx-auto ${
           theme === "dark" ? "text-gray-300" : "text-gray-600"
         }`}>
           Looking for my next challenge where I can build innovative solutions and grow with a talented team. Let's discuss potential opportunities.

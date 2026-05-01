@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, useMotionValue, animate } from "framer-motion";
+import { usePortfolio } from "../ context/PortfolioContext";
 
 export default function AnimatedCounter({
   from = 0,
@@ -33,21 +34,8 @@ export default function AnimatedCounter({
 
 // Stats section with animated counters
 export function AnimatedStats() {
-  // Calculate dynamic years of experience
-  const calculateYearsExperience = () => {
-    const startDate = new Date('2023-01-01'); // Assuming started in 2023
-    const currentDate = new Date();
-    const years = currentDate.getFullYear() - startDate.getFullYear();
-    const months = currentDate.getMonth() - startDate.getMonth();
-    return months < 0 ? years - 1 : years;
-  };
-
-  const stats = [
-    { label: "Projects Completed", value: 15, suffix: "+" },
-    { label: "Happy Clients", value: 12, suffix: "+" },
-    { label: "Years Experience", value: calculateYearsExperience(), suffix: "+" },
-    { label: "Technologies", value: 20, suffix: "+" }
-  ];
+  const { portfolioData } = usePortfolio();
+  const stats = portfolioData.stats;
 
   return (
     <section className="relative py-16 overflow-hidden">

@@ -1,49 +1,10 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo } from "react";
+import { usePortfolio } from "../ context/PortfolioContext";
 
 export default function Projects() {
-  const projects = [
-    {
-      id: 1,
-      title: "House Hunter Platform",
-      image: "/projects/image.png",
-      description:
-        "A web app connecting tenants and landlords, allowing landlords to post houses with specifications and tenants to view listings and comment. NOTE, STILL UNDER DEVELOPMENT",
-      link: "https://house-hunter-ehq3.vercel.app/",
-      technologies: ["Django", "React.js"],
-      type: "Website"
-    },
-    {
-      id: 2,
-      title: "Bill Splitter App",
-      image: "/projects/bill.png",
-      description:
-        "A budget tracker web app that records income and expenses, supports filtering and deletion, and persists data with cookies.",
-      link: "https://manuijaev.github.io/bill-splliter/",
-      technologies: ["JavaScript", "HTML", "CSS"],
-      type: "Website"
-    },
-    {
-      id: 3,
-      title: "Smart Budget Dashboard",
-      image: "/projects/smartbudget.png",
-      description:
-        "A single visual hub that categorizes spending, tracks goals, and gives financial clarity using a modern dashboard interface.",
-      link: "https://smart-dash-mlb2.onrender.com/",
-      technologies: ["Flask", "UI/UX Principles", "Python"],
-      type: "Dashboard"
-    },
-     {
-      id: 4,
-      title: "Patrolscan",
-      image: "public/projects/patrol.png",
-      description:
-        "A modern patrol management system with QR-based guard tracking, real-time reports, offline PWA support, and role-based access.",
-      link: "https://patrolscan.vercel.app/admin-login",
-      technologies: ["Node.js", "React.js"],
-      type: "Dashboard"
-    },
-  ];
+  const { portfolioData } = usePortfolio();
+  const projects = portfolioData.projects;
 
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedTech, setSelectedTech] = useState("");
@@ -71,12 +32,12 @@ export default function Projects() {
   }, [projects, searchTerm, selectedTech, selectedType]);
 
   return (
-    <section className="min-h-screen bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 py-8 sm:py-12">
+    <section className="section-shell min-h-screen bg-gray-50 dark:bg-gray-900 py-8 sm:py-12">
       <div className="container mx-auto max-w-7xl">
 
         {/* Animated Section Title */}
         <motion.h2
-          className="text-2xl sm:text-3xl md:text-4xl font-bold text-center text-gray-900 dark:text-white mb-8 sm:mb-12"
+          className="text-3xl sm:text-4xl font-bold text-center text-gray-900 dark:text-white mb-8 sm:mb-12"
           initial={{ opacity: 0, y: -20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}

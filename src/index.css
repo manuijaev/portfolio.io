@@ -1,3 +1,17 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components {
+  .section-shell {
+    @apply w-full max-w-7xl mx-auto px-4 sm:px-6;
+  }
+
+  .copy-block {
+    @apply text-center md:text-left leading-relaxed max-w-2xl mx-auto md:mx-0;
+  }
+
+  .cta-btn {
+    @apply relative w-full sm:w-48 h-12 inline-flex items-center justify-center rounded-lg shadow-xl overflow-hidden font-semibold text-base;
+  }
+}

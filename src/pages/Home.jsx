@@ -5,9 +5,11 @@ import Typewriter from "typewriter-effect";
 import Testimonials from "../components/Testimonials";
 import ParticleEffect from "../components/ParticleEffect";
 import { AnimatedStats } from "../components/AnimatedCounter";
+import { usePortfolio } from "../ context/PortfolioContext";
 
 export default function Home() {
   const [showParticles, setShowParticles] = useState(false);
+  const { portfolioData } = usePortfolio();
 
   const triggerParticles = () => {
     setShowParticles(true);
@@ -16,17 +18,17 @@ export default function Home() {
 
   return (
     <div>
-      <section className="flex flex-col md:flex-row items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 px-4 sm:px-6 overflow-hidden py-16 md:py-0">
+      <section className="section-shell flex flex-col md:flex-row items-center justify-center min-h-screen bg-gray-50 dark:bg-gray-900 overflow-hidden py-10 sm:py-14 md:py-0 gap-8 md:gap-12">
 
         {/* Left side */}
         <motion.div
-          className="md:w-1/2 text-center md:text-left space-y-4 md:space-y-6 max-w-2xl mx-auto md:mx-0"
+          className="md:w-1/2 text-center md:text-left space-y-4 md:space-y-6"
           initial={{ opacity: 0, x: -40 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8 }}
         >
           <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white leading-tight">
-            Hi, I’m <span className="text-blue-500">Emmanuel Kenyani</span>
+            Hi, I’m <span className="text-blue-500">{portfolioData.hero.headingName}</span>
           </h1>
 
           {/* Dynamic Typewriter Subtitle */}
@@ -34,12 +36,7 @@ export default function Home() {
             <Typewriter
               options={{
                 strings: [
-                  "Junior Software Developer",
-                  "Full-Stack Developer",
-                  "React & Tailwind Specialist",
-                  "Firebase & Cloud Enthusiast",
-                  "Python & Django Developer",
-                  "RESTful API Engineer",
+                  ...portfolioData.hero.typewriterRoles,
                 ],
                 autoStart: true,
                 loop: true,
@@ -48,15 +45,8 @@ export default function Home() {
           </div>
 
           {/* Paragraph */}
-          <p className="text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed max-w-xl mx-auto md:mx-0">
-            I’m a <span className="font-semibold">Junior Software Developer</span> who loves transforming ideas
-            into fast, clean, and interactive digital experiences. I specialize in
-            <strong> HTML, CSS, Tailwind, and JavaScript</strong>, with strong hands-on
-            experience in <strong>React</strong> and <strong>Firebase</strong>.
-            I also work with <strong>Python, Django, SQLite,</strong> and
-            <strong>RESTful API development</strong> to build powerful and scalable backend
-            solutions. I’m constantly exploring new technologies and refining my craft to
-            create impactful and user-friendly applications.
+          <p className="text-left md:text-left text-base sm:text-lg text-gray-700 dark:text-gray-300 leading-relaxed max-w-2xl mx-auto md:mx-0">
+            {portfolioData.hero.bio}
           </p>
 
           {/* Buttons */}
@@ -64,7 +54,7 @@ export default function Home() {
             <motion.a
               href="/projects/kenyani's resume.pdf"
               download
-              className="relative inline-block px-6 py-3 bg-blue-600 text-white rounded-lg shadow-xl overflow-hidden group"
+              className="cta-btn bg-blue-600 text-white group"
               whileHover={{
                 scale: 1.05,
                 boxShadow: "0 20px 25px -5px rgba(59, 130, 246, 0.4), 0 10px 10px -5px rgba(59, 130, 246, 0.2)"
@@ -78,7 +68,7 @@ export default function Home() {
                 initial={false}
                 whileHover={{ scale: 1.1 }}
               />
-              <span className="relative z-10 flex items-center gap-2">
+              <span className="relative z-10 inline-flex items-center justify-center gap-2">
                 Download CV
               </span>
             </motion.a>
@@ -91,13 +81,13 @@ export default function Home() {
               <Link
                 to="/projects"
                 onClick={triggerParticles}
-                className="relative inline-block px-6 py-3 bg-gray-800 text-white rounded-lg shadow-xl overflow-hidden group"
+                className="cta-btn bg-gray-800 text-white group"
               >
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
                   whileHover={{ scale: 1.1 }}
                 />
-                <span className="relative z-10 flex items-center gap-2">
+                <span className="relative z-10 inline-flex items-center justify-center gap-2">
                   View Projects
                 </span>
               </Link>
@@ -114,7 +104,7 @@ export default function Home() {
         >
           <motion.div className="relative">
             <motion.img
-              src="/projects/emmanuel.jpg"
+              src={portfolioData.hero.profileImage}
               alt="Emmanuel Kenyani"
               className="w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-72 lg:h-72 rounded-full object-cover shadow-2xl border-4 border-blue-500"
               animate={{

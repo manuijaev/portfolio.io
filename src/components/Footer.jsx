@@ -1,5 +1,6 @@
 import { Github, Linkedin, Mail } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -71,6 +72,13 @@ export default function Footer() {
               <Linkedin className="w-5 h-5 sm:w-6 sm:h-6" />
             </motion.a>
           </div>
+
+          <Link
+            to="/admin/login"
+            className="text-xs sm:text-sm px-3 py-1.5 rounded-lg border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white transition-colors"
+          >
+            Admin Login
+          </Link>
         </motion.div>
       </motion.div>
 
