@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { BarChart3, FileText, FolderKanban, LogOut, RotateCcw, Save, Trash2, XCircle, Pencil, PlusCircle, ImagePlus, Link2 } from "lucide-react";
@@ -24,7 +24,7 @@ export default function AdminDashboard() {
   const { portfolioData, storageStatus, isLoading, resetPortfolioData, logoutAdmin, exportPortfolio, importPortfolio } = usePortfolio();
   const [activeTab, setActiveTab] = useState("text");
   const [status, setStatus] = useState("");
-  const importInputRef = useState(null)[1];
+  const importInputRef = useRef(null);
 
   if (isLoading) {
     return (
