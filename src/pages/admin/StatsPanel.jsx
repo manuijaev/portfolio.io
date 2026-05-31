@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
@@ -9,7 +9,7 @@ export default function StatsPanel() {
   const { portfolioData, updateStats } = usePortfolio();
   const [statsDraft, setStatsDraft] = useState(() => portfolioData.stats.map((item) => ({ ...item })));
 
-  useMemo(() => {
+  useEffect(() => {
     setStatsDraft(portfolioData.stats.map((item) => ({ ...item })));
   }, [portfolioData.stats]);
 

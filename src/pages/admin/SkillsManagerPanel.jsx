@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { PlusCircle, Save } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
@@ -12,7 +12,7 @@ export default function SkillsManagerPanel() {
   const [skillsDraft, setSkillsDraft] = useState(() => (portfolioData.skills || []).map((skill) => ({ ...skill })));
   const [skillForm, setSkillForm] = useState({ name: "", category: "Frontend", experience: 60 });
 
-  useMemo(() => {
+  useEffect(() => {
     setSkillsDraft((portfolioData.skills || []).map((skill) => ({ ...skill })));
   }, [portfolioData.skills]);
 

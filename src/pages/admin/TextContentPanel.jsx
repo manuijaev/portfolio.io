@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Pencil, Save, ChevronDown, ChevronUp } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
@@ -17,7 +17,7 @@ export default function TextContentPanel() {
   const [heroRolesText, setHeroRolesText] = useState(portfolioData.hero.typewriterRoles.join("\n"));
   const [showAboutForm, setShowAboutForm] = useState(false);
 
-  useMemo(() => {
+  useEffect(() => {
     setHeroBio(portfolioData.hero.bio);
     setHeroName(portfolioData.hero.headingName);
     setAboutHeading(portfolioData.about.heading || "About Me");

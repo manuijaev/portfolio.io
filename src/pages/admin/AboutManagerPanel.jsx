@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Save, ChevronDown, ChevronUp } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
@@ -14,7 +14,7 @@ export default function AboutManagerPanel() {
   const [newAchievement, setNewAchievement] = useState("");
   const [showDetails, setShowDetails] = useState(false);
 
-  useMemo(() => {
+  useEffect(() => {
     setAboutHeading(portfolioData.about.heading || "About Me");
     setAboutIntro(portfolioData.about.intro || "");
     setAboutStory(portfolioData.about.story || "");
