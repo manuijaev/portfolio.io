@@ -1,7 +1,7 @@
 /* global Buffer, process */
 
 const ADMIN_EMAIL = cleanEnvValue(process.env.ADMIN_EMAIL || "Kenyaniemmanuel44@gmail.com");
-const ADMIN_PASSWORD = cleanEnvValue(process.env.ADMIN_PASSWORD || "Graul@2026");
+const ADMIN_PASSWORD = cleanEnvValue(process.env.ADMIN_PASSWORD || "admin123");
 
 function cleanEnvValue(value) {
   return String(value || "").trim().replace(/^["']|["']$/g, "");

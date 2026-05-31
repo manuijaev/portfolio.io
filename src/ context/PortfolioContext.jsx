@@ -8,7 +8,7 @@ const ADMIN_LOGIN_ENDPOINT = "/api/admin-login";
 
 const ADMIN_CREDENTIALS = {
   email: "Kenyaniemmanuel44@gmail.com",
-  password: "Graul@2026",
+  password: "admin123",
 };
 
 const PortfolioContext = createContext();
