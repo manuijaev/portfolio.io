@@ -516,14 +516,33 @@ export default function AdminDashboard() {
       );
     }, 150);
 
+    setProjectSaveState({ isSaving: true, progress: 85, label: "Writing to browser storage..." });
+
     const result = editingProjectId ? await updateProject(editingProjectId, payload) : await addProject(payload);
+
     if (!result?.success) {
       setProjectSaveState({ isSaving: false, progress: 0, label: "" });
+
+      const errorDetails = [
+        result?.error ? `Error type: ${result.error}` : null,
+        result?.message || "Failed to save project.",
+        result?.stack ? `Stack: ${result.stack}` : null,
+        "Tip: Check browser console (F12) for full error details.",
+      ].filter(Boolean).join("\n");
+
       showToast({
         type: "error",
-        message: result?.message || "Failed to save project.",
-        details: getProjectSaveErrorDetails(result) || "No extra error details were returned.",
+        message: editingProjectId ? "Project update failed." : "Project creation failed.",
+        details: errorDetails,
       });
+
+      console.error("[Portfolio Save Error]", {
+        operation: editingProjectId ? "updateProject" : "addProject",
+        projectTitle: payload.title,
+        error: result,
+        timestamp: new Date().toISOString(),
+      });
+
       return;
     }
 

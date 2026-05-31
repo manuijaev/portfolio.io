@@ -194,12 +194,26 @@ export function PortfolioProvider({ children }) {
       setPortfolioData(nextData);
       return { success: true };
     } catch (error) {
+      const errorName = error?.name || "UnknownError";
+      let detailedMessage = "Failed to save portfolio data.";
+
+      if (errorName === "QuotaExceededError") {
+        const totalSize = new Blob([serialized]).size;
+        const sizeMB = (totalSize / (1024 * 1024)).toFixed(2);
+        detailedMessage = `Browser storage quota exceeded. Current data size: ${sizeMB}MB. Delete some projects or use smaller images/videos.`;
+      } else if (errorName === "SecurityError") {
+        detailedMessage = "Browser blocked storage access. Check if you're in private/incognito mode or have storage disabled.";
+      } else if (errorName === "InvalidStateError") {
+        detailedMessage = "Storage is in an invalid state. Try refreshing the page or clearing browser data.";
+      } else if (error instanceof Error) {
+        detailedMessage = `Storage error: ${error.message}`;
+      }
+
       return {
         success: false,
-        message:
-          error?.name === "QuotaExceededError"
-            ? "Storage is full. Please use smaller images or delete some projects."
-            : "Failed to save portfolio data.",
+        error: errorName,
+        message: detailedMessage,
+        stack: error instanceof Error ? error.stack : undefined,
       };
     }
   };
