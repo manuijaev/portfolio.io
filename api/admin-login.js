@@ -1,7 +1,11 @@
 /* global Buffer, process */
 
-const ADMIN_EMAIL = process.env.ADMIN_EMAIL || "Kenyaniemmanuel44@gmail.com";
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || "Graul@2026";
+const ADMIN_EMAIL = cleanEnvValue(process.env.ADMIN_EMAIL || "Kenyaniemmanuel44@gmail.com");
+const ADMIN_PASSWORD = cleanEnvValue(process.env.ADMIN_PASSWORD || "Graul@2026");
+
+function cleanEnvValue(value) {
+  return String(value || "").trim().replace(/^["']|["']$/g, "");
+}
 
 function sendJson(response, statusCode, payload) {
   response.statusCode = statusCode;
@@ -27,14 +31,16 @@ export default async function handler(request, response) {
     return;
   }
 
-  const sessionToken = process.env.PORTFOLIO_WRITE_TOKEN;
+  const sessionToken = cleanEnvValue(process.env.PORTFOLIO_WRITE_TOKEN);
   if (!sessionToken) {
     sendJson(response, 503, { success: false, message: "Admin session token is not configured." });
     return;
   }
 
   const { email = "", password = "" } = await readBody(request);
-  const isValid = email.trim().toLowerCase() === ADMIN_EMAIL.toLowerCase() && password === ADMIN_PASSWORD;
+  const submittedEmail = cleanEnvValue(email).toLowerCase();
+  const submittedPassword = cleanEnvValue(password);
+  const isValid = submittedEmail === ADMIN_EMAIL.toLowerCase() && submittedPassword === ADMIN_PASSWORD;
 
   if (!isValid) {
     sendJson(response, 401, { success: false, message: "Invalid email or password." });
