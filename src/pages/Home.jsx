@@ -5,7 +5,7 @@ import Typewriter from "typewriter-effect";
 import Testimonials from "../components/Testimonials";
 import ParticleEffect from "../components/ParticleEffect";
 import { AnimatedStats } from "../components/AnimatedCounter";
-import { usePortfolio } from "../ context/PortfolioContext";
+import { usePortfolio } from "../context/PortfolioContext";
 
 export default function Home() {
   const [showParticles, setShowParticles] = useState(false);

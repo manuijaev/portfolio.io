@@ -3,7 +3,7 @@ import { FloatingParticles } from "../components/ParticleEffect";
 import SkillsVisualization from "../components/SkillsVisualization";
 import ExperienceTimeline from "../components/ExperienceTimeline";
 import { AnimatedStats } from "../components/AnimatedCounter";
-import { usePortfolio } from "../ context/PortfolioContext";
+import { usePortfolio } from "../context/PortfolioContext";
 
 const MotionH2 = motion.h2;
 const MotionDiv = motion.div;

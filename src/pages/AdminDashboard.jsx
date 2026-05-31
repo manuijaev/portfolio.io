@@ -16,7 +16,7 @@ import {
   Trash2,
   XCircle,
 } from "lucide-react";
-import { usePortfolio } from "../ context/PortfolioContext";
+import { usePortfolio } from "../context/PortfolioContext";
 import { defaultPortfolioData } from "../data/portfolioDefaults";
 import { getProjectLink } from "../utils/caseStudy";
 
@@ -356,7 +356,7 @@ export default function AdminDashboard() {
           size: file.size,
         },
       }));
-      setStatus("Small video selected. Save project to publish it.");
+      setStatus("Video selected. Save project to store it locally.");
     };
     reader.readAsDataURL(file);
   };
@@ -512,7 +512,7 @@ export default function AdminDashboard() {
 
     window.setTimeout(() => {
       setProjectSaveState((prev) =>
-        prev.isSaving ? { isSaving: true, progress: Math.max(prev.progress, 70), label: "Publishing to shared storage..." } : prev
+        prev.isSaving ? { isSaving: true, progress: Math.max(prev.progress, 70), label: "Saving to local storage..." } : prev
       );
     }, 150);
 
@@ -522,16 +522,16 @@ export default function AdminDashboard() {
       showToast({
         type: "error",
         message: result?.message || "Failed to save project.",
-        details: getProjectSaveErrorDetails(result) || "No extra error details were returned by the server.",
+        details: getProjectSaveErrorDetails(result) || "No extra error details were returned.",
       });
       return;
     }
 
-    setProjectSaveState({ isSaving: false, progress: 100, label: "Published successfully." });
+    setProjectSaveState({ isSaving: false, progress: 100, label: "Saved successfully." });
     showToast({
       type: "success",
       message: editingProjectId ? "Project updated." : "Project added.",
-      details: "The project was saved to shared storage and should be visible on mobile after refresh.",
+      details: "The project was saved to local storage. It will be available on this device.",
     });
 
     setEditingProjectId(null);
@@ -1172,7 +1172,7 @@ export default function AdminDashboard() {
                       controls
                       preload="metadata"
                       src={projectForm.videoPresentation.src}
-                      className="w-full rounded-md bg-black"
+                      className="w-full max-h-64 rounded-md bg-black"
                     />
                     <p className="mt-2 text-xs text-cyan-700 dark:text-cyan-300">
                       {projectForm.videoPresentation.name || "Uploaded video"}

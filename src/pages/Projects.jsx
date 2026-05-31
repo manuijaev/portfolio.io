@@ -1,7 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { usePortfolio } from "../ context/PortfolioContext";
+import { usePortfolio } from "../context/PortfolioContext";
 
 const MotionH2 = motion.h2;
 const MotionDiv = motion.div;

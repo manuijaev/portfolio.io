@@ -2,7 +2,7 @@ import { createElement } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, CheckCircle2, Clapperboard, Cpu, Layers, Target } from "lucide-react";
-import { usePortfolio } from "../ context/PortfolioContext";
+import { usePortfolio } from "../context/PortfolioContext";
 import { buildCaseStudy, formatBytes, getProjectLink, getProjectVideo } from "../utils/caseStudy";
 
 const MotionDiv = motion.div;

@@ -1,5 +1,5 @@
 import { Navigate } from "react-router-dom";
-import { usePortfolio } from "../ context/PortfolioContext";
+import { usePortfolio } from "../context/PortfolioContext";
 
 export default function AdminRoute({ children }) {
   const { adminSession } = usePortfolio();

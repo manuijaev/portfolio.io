@@ -9,8 +9,8 @@ import Contact from "./pages/Contact";
 import AdminLogin from "./pages/AdminLogin";
 import AdminDashboard from "./pages/AdminDashboard";
 import AdminRoute from "./components/AdminRoute";
-import { ThemeProvider } from "./ context/ThemeContext";
-import { PortfolioProvider } from "./ context/PortfolioContext";
+import { ThemeProvider } from "./context/ThemeContext";
+import { PortfolioProvider } from "./context/PortfolioContext";
 
 export default function App() {
   return (

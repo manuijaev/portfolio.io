@@ -3,8 +3,7 @@ import { defaultPortfolioData } from "../data/portfolioDefaults";
 
 const STORAGE_KEY = "portfolio_data_v1";
 const SESSION_KEY = "portfolio_admin_session_v1";
-const REMOTE_DATA_ENDPOINT = "/api/portfolio";
-const ADMIN_LOGIN_ENDPOINT = "/api/admin-login";
+const MAX_PROJECT_SIZE_BYTES = 40 * 1024 * 1024; // 40MB per project
 
 const ADMIN_CREDENTIALS = {
   email: "Kenyaniemmanuel44@gmail.com",
@@ -135,81 +134,23 @@ function safelyReadStorage(key, fallback) {
   }
 }
 
-function isLocalDevelopment() {
-  return ["localhost", "127.0.0.1"].includes(window.location.hostname);
+function getProjectSize(project) {
+  if (!project || typeof project !== "object") return 0;
+  const imageSize = project.image ? new Blob([project.image]).size : 0;
+  const videoSize = project.videoPresentation?.src ? new Blob([project.videoPresentation.src]).size : 0;
+  return imageSize + videoSize;
 }
 
-async function fetchRemotePortfolioData() {
-  try {
-    const response = await fetch(REMOTE_DATA_ENDPOINT, {
-      headers: { Accept: "application/json" },
-    });
-
-    if (!response.ok) return null;
-
-    const payload = await response.json();
-    return payload?.data && typeof payload.data === "object" ? payload.data : null;
-  } catch {
-    return null;
-  }
-}
-
-async function saveRemotePortfolioData(data) {
-  try {
-    const response = await fetch(REMOTE_DATA_ENDPOINT, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      credentials: "same-origin",
-      body: JSON.stringify(data),
-    });
-
-    if (response.ok) {
-      return { success: true };
-    }
-
-    const payload = await response.json().catch(() => ({}));
+function validateProjectSize(project) {
+  const size = getProjectSize(project);
+  if (size > MAX_PROJECT_SIZE_BYTES) {
+    const sizeMB = (size / (1024 * 1024)).toFixed(1);
     return {
-      success: false,
-      status: response.status,
-      reason: response.statusText || "Request failed",
-      details: payload?.message || "",
-      message:
-        response.status === 401
-          ? "Your admin session expired. Log out, log in again, then save."
-          : payload?.message || "Failed to save portfolio data to shared storage.",
-    };
-  } catch {
-    return {
-      success: false,
-      reason: "Network request failed",
-      details: "The browser could not reach the shared portfolio API.",
-      message: "Shared storage is unavailable. Check your deployment environment variables.",
+      valid: false,
+      message: `Project exceeds 40MB limit (currently ${sizeMB}MB). Please use smaller images or a hosted video URL.`,
     };
   }
-}
-
-async function loginRemoteAdmin(credentials) {
-  try {
-    const response = await fetch(ADMIN_LOGIN_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-      credentials: "same-origin",
-      body: JSON.stringify(credentials),
-    });
-
-    if (response.status === 404) return null;
-
-    const payload = await response.json();
-    return response.ok ? { success: true } : { success: false, message: payload?.message || "Invalid email or password." };
-  } catch {
-    return null;
-  }
+  return { valid: true };
 }
 
 export function PortfolioProvider({ children }) {
@@ -230,45 +171,24 @@ export function PortfolioProvider({ children }) {
     adminSessionRef.current = adminSession;
   }, [adminSession]);
 
-  useEffect(() => {
-    let isMounted = true;
-
-    fetchRemotePortfolioData().then((remoteData) => {
-      if (!isMounted || !remoteData) return;
-
-      const incoming = normalizePortfolioData(remoteData);
-      portfolioDataRef.current = incoming;
-      setPortfolioData(incoming);
-
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(incoming));
-      } catch {
-        // Remote data is still usable even if browser storage is unavailable or full.
-      }
-    });
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   const persistPortfolioData = async (updater) => {
     const nextData = normalizePortfolioData(
       typeof updater === "function" ? updater(portfolioDataRef.current) : updater
     );
+
+    // Validate all projects against 40MB limit
+    for (const project of nextData.projects) {
+      const validation = validateProjectSize(project);
+      if (!validation.valid) {
+        return {
+          success: false,
+          message: validation.message,
+        };
+      }
+    }
+
     try {
       const serialized = JSON.stringify(nextData);
-      const remoteResult = await saveRemotePortfolioData(nextData);
-      if (!remoteResult.success) {
-        if (remoteResult.status === 401) {
-          const session = { authenticated: false, email: "" };
-          adminSessionRef.current = session;
-          setAdminSession(session);
-          localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-        }
-        return remoteResult;
-      }
-
       localStorage.setItem(STORAGE_KEY, serialized);
       portfolioDataRef.current = nextData;
       setPortfolioData(nextData);
@@ -346,21 +266,6 @@ export function PortfolioProvider({ children }) {
   };
 
   const loginAdmin = async ({ email, password }) => {
-    const remoteResult = await loginRemoteAdmin({ email, password });
-    if (remoteResult && !remoteResult.success) {
-      return remoteResult;
-    }
-    if (remoteResult?.success) {
-      const session = { authenticated: true, email: email.trim() };
-      adminSessionRef.current = session;
-      setAdminSession(session);
-      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
-      return { success: true };
-    }
-    if (!remoteResult && !isLocalDevelopment()) {
-      return { success: false, message: "Admin login service is unavailable. Check Vercel environment variables and redeploy." };
-    }
-
     const isValid =
       email.trim().toLowerCase() === ADMIN_CREDENTIALS.email.toLowerCase() &&
       password === ADMIN_CREDENTIALS.password;
