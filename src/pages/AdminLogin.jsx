@@ -8,10 +8,15 @@ export default function AdminLogin() {
   const { loginAdmin } = usePortfolio();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
-    const result = loginAdmin(form);
+    setIsSubmitting(true);
+    setError("");
+    const result = await loginAdmin(form);
+    setIsSubmitting(false);
+
     if (!result.success) {
       setError(result.message);
       return;
@@ -55,9 +60,10 @@ export default function AdminLogin() {
           {error && <p className="text-sm text-red-500">{error}</p>}
           <button
             type="submit"
+            disabled={isSubmitting}
             className="w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 transition-colors"
           >
-            Access Dashboard
+            {isSubmitting ? "Checking..." : "Access Dashboard"}
           </button>
         </form>
       </motion.div>

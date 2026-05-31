@@ -4,7 +4,7 @@ import { defaultPortfolioData } from "../data/portfolioDefaults";
 const STORAGE_KEY = "portfolio_data_v1";
 const SESSION_KEY = "portfolio_admin_session_v1";
 const REMOTE_DATA_ENDPOINT = "/api/portfolio";
-const REMOTE_WRITE_TOKEN = import.meta.env.VITE_PORTFOLIO_WRITE_TOKEN || "";
+const ADMIN_LOGIN_ENDPOINT = "/api/admin-login";
 
 const ADMIN_CREDENTIALS = {
   email: "Kenyaniemmanuel44@gmail.com",
@@ -157,14 +157,35 @@ async function saveRemotePortfolioData(data) {
       headers: {
         "Content-Type": "application/json",
         Accept: "application/json",
-        ...(REMOTE_WRITE_TOKEN ? { "X-Portfolio-Write-Token": REMOTE_WRITE_TOKEN } : {}),
       },
+      credentials: "same-origin",
       body: JSON.stringify(data),
     });
 
     return response.ok;
   } catch {
     return false;
+  }
+}
+
+async function loginRemoteAdmin(credentials) {
+  try {
+    const response = await fetch(ADMIN_LOGIN_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+      credentials: "same-origin",
+      body: JSON.stringify(credentials),
+    });
+
+    if (response.status === 404) return null;
+
+    const payload = await response.json();
+    return response.ok ? { success: true } : { success: false, message: payload?.message || "Invalid email or password." };
+  } catch {
+    return null;
   }
 }
 
@@ -291,7 +312,12 @@ export function PortfolioProvider({ children }) {
     return persistPortfolioData(() => defaultPortfolioData);
   };
 
-  const loginAdmin = ({ email, password }) => {
+  const loginAdmin = async ({ email, password }) => {
+    const remoteResult = await loginRemoteAdmin({ email, password });
+    if (remoteResult && !remoteResult.success) {
+      return remoteResult;
+    }
+
     const isValid =
       email.trim().toLowerCase() === ADMIN_CREDENTIALS.email.toLowerCase() &&
       password === ADMIN_CREDENTIALS.password;

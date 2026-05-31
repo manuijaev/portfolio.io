@@ -16,9 +16,17 @@ function getRedisConfig() {
   return url && token ? { url, token } : null;
 }
 
+function getCookie(request, name) {
+  const cookieHeader = request.headers.cookie || "";
+  const cookies = cookieHeader.split(";").map((cookie) => cookie.trim());
+  const match = cookies.find((cookie) => cookie.startsWith(`${name}=`));
+
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : "";
+}
+
 function isAuthorizedWrite(request) {
   const expectedToken = process.env.PORTFOLIO_WRITE_TOKEN;
-  const incomingToken = request.headers["x-portfolio-write-token"];
+  const incomingToken = getCookie(request, "portfolio_admin_session");
 
   return Boolean(expectedToken) && incomingToken === expectedToken;
 }
