@@ -3,6 +3,8 @@ import { defaultPortfolioData } from "../data/portfolioDefaults";
 
 const STORAGE_KEY = "portfolio_data_v1";
 const SESSION_KEY = "portfolio_admin_session_v1";
+const REMOTE_DATA_ENDPOINT = "/api/portfolio";
+const REMOTE_WRITE_TOKEN = import.meta.env.VITE_PORTFOLIO_WRITE_TOKEN || "";
 
 const ADMIN_CREDENTIALS = {
   email: "Kenyaniemmanuel44@gmail.com",
@@ -133,6 +135,39 @@ function safelyReadStorage(key, fallback) {
   }
 }
 
+async function fetchRemotePortfolioData() {
+  try {
+    const response = await fetch(REMOTE_DATA_ENDPOINT, {
+      headers: { Accept: "application/json" },
+    });
+
+    if (!response.ok) return null;
+
+    const payload = await response.json();
+    return payload?.data && typeof payload.data === "object" ? payload.data : null;
+  } catch {
+    return null;
+  }
+}
+
+async function saveRemotePortfolioData(data) {
+  try {
+    const response = await fetch(REMOTE_DATA_ENDPOINT, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+        ...(REMOTE_WRITE_TOKEN ? { "X-Portfolio-Write-Token": REMOTE_WRITE_TOKEN } : {}),
+      },
+      body: JSON.stringify(data),
+    });
+
+    return response.ok;
+  } catch {
+    return false;
+  }
+}
+
 export function PortfolioProvider({ children }) {
   const [portfolioData, setPortfolioData] = useState(() =>
     normalizePortfolioData(safelyReadStorage(STORAGE_KEY, defaultPortfolioData))
@@ -151,6 +186,28 @@ export function PortfolioProvider({ children }) {
     adminSessionRef.current = adminSession;
   }, [adminSession]);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    fetchRemotePortfolioData().then((remoteData) => {
+      if (!isMounted || !remoteData) return;
+
+      const incoming = normalizePortfolioData(remoteData);
+      portfolioDataRef.current = incoming;
+      setPortfolioData(incoming);
+
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(incoming));
+      } catch {
+        // Remote data is still usable even if browser storage is unavailable or full.
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const persistPortfolioData = (updater) => {
     const nextData = normalizePortfolioData(
       typeof updater === "function" ? updater(portfolioDataRef.current) : updater
@@ -160,6 +217,7 @@ export function PortfolioProvider({ children }) {
       localStorage.setItem(STORAGE_KEY, serialized);
       portfolioDataRef.current = nextData;
       setPortfolioData(nextData);
+      saveRemotePortfolioData(nextData);
       return { success: true };
     } catch (error) {
       return {
