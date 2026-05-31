@@ -37,7 +37,7 @@ export default function SkillsManagerPanel() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.4 }}
-      className="rounded-2xl border border-slate-200/80 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/85 p-5 shadow-lg"
+      className="rounded-2xl border border-slate-200/80 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/85 p-5 shadow-lg backdrop-blur"
     >
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Skills Manager</h2>
       <div className="space-y-3">
@@ -75,14 +75,16 @@ export default function SkillsManagerPanel() {
             className="w-full accent-emerald-600"
           />
         </div>
-        <button
+        <motion.button
           type="button"
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={addSkillDraft}
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-700"
         >
           <PlusCircle size={16} />
           Add Skill
-        </button>
+        </motion.button>
         <div className="space-y-2 max-h-72 overflow-auto pr-1">
           {skillsDraft.map((skill, index) => (
             <div key={skill.id || index} className="rounded-xl border border-slate-300/90 dark:border-slate-600 p-3 bg-white/80 dark:bg-slate-950/50">
@@ -111,13 +113,15 @@ export default function SkillsManagerPanel() {
                     </option>
                   ))}
                 </select>
-                <button
+                <motion.button
                   type="button"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setSkillsDraft((prev) => prev.filter((_, idx) => idx !== index))}
                   className="rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-700"
                 >
                   Delete
-                </button>
+                </motion.button>
               </div>
               <div className="mt-2">
                 <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
@@ -141,13 +145,15 @@ export default function SkillsManagerPanel() {
             </div>
           ))}
         </div>
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => updateSkills(skillsDraft.map((skill) => ({ ...skill, experience: Number(skill.experience) || 0 })))}
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
         >
           <Save size={16} />
           Save Skills
-        </button>
+        </motion.button>
       </div>
     </MotionDiv>
   );

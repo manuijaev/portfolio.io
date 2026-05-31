@@ -1,7 +1,7 @@
 import { createElement } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle2, Clapperboard, Cpu, Layers, Target } from "lucide-react";
+import { ArrowLeft, CheckCircle2, Clapperboard, Cpu, Layers, Target, ExternalLink } from "lucide-react";
 import { usePortfolio } from "../context/PortfolioContext";
 import { buildCaseStudy, formatBytes, getProjectLink, getProjectVideo } from "../utils/caseStudy";
 
@@ -22,6 +22,7 @@ export default function ProjectCaseStudy() {
   const video = getProjectVideo(project);
   const videoEmbed = video ? getVideoEmbed(video.src) : null;
   const projectLink = getProjectLink(project);
+  const isExternalVideo = video && !video.isDataUrl && !videoEmbed;
 
   return (
     <section className="section-shell py-8 sm:py-12 min-h-screen">
@@ -144,6 +145,18 @@ export default function ProjectCaseStudy() {
                   allowFullScreen
                   className="aspect-video w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-black"
                 />
+              ) : isExternalVideo ? (
+                <div className="flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950/40 p-6">
+                  <a
+                    href={video.src}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-6 py-3 text-white font-semibold hover:bg-cyan-700"
+                  >
+                    <ExternalLink size={18} />
+                    Watch Video
+                  </a>
+                </div>
               ) : (
                 <video
                   controls
@@ -173,6 +186,46 @@ export default function ProjectCaseStudy() {
   );
 }
 
+function CaseCard({ icon, title, content }) {
+  const [expanded, setExpanded] = useState(false);
+  const maxLength = 120;
+  const isLong = content.length > maxLength;
+  const displayContent = isLong && !expanded ? content.slice(0, maxLength).trim() + "..." : content;
+
+  return (
+    <MotionDiv
+      initial={{ opacity: 0, y: 12 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5 sm:p-6"
+    >
+      <div className="flex items-center gap-2 mb-3">
+        {createElement(icon, { size: 18, className: "text-cyan-600 dark:text-cyan-400" })}
+        <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
+      </div>
+      <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">{displayContent}</p>
+      {isLong && (
+        <button
+          onClick={() => setExpanded(!expanded)}
+          className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-cyan-600 hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-300"
+        >
+          {expanded ? (
+            <>
+              <ChevronUp size={14} />
+              Read less
+            </>
+          ) : (
+            <>
+              <ChevronDown size={14} />
+              Read more
+            </>
+          )}
+        </button>
+      )}
+    </MotionDiv>
+  );
+}
+
 function getVideoEmbed(src) {
   try {
     const url = new URL(src);
@@ -196,21 +249,4 @@ function getVideoEmbed(src) {
   } catch {
     return "";
   }
-}
-
-function CaseCard({ icon: Icon, title, content }) {
-  return (
-    <MotionDiv
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-5"
-    >
-      <div className="flex items-center gap-2 mb-2">
-        {createElement(Icon, { size: 17, className: "text-cyan-600 dark:text-cyan-400" })}
-        <h3 className="font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-      </div>
-      <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed">{content}</p>
-    </MotionDiv>
-  );
 }

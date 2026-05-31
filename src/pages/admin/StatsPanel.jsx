@@ -18,7 +18,7 @@ export default function StatsPanel() {
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 0.2 }}
-      className="rounded-2xl border border-slate-200/80 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/85 p-5 shadow-lg"
+      className="rounded-2xl border border-slate-200/80 dark:border-slate-700/80 bg-white/90 dark:bg-slate-900/85 p-5 shadow-lg backdrop-blur"
     >
       <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-4">Stats</h2>
       <div className="space-y-3">
@@ -45,13 +45,15 @@ export default function StatsPanel() {
             />
           </div>
         ))}
-        <button
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={() => updateStats(statsDraft.map((item) => ({ ...item, value: Number(item.value) || 0 })))}
           className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-700"
         >
           <Save size={16} />
           Save Stats
-        </button>
+        </motion.button>
       </div>
     </MotionDiv>
   );
