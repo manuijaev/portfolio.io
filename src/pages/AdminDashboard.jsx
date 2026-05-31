@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { BarChart3, FileText, FolderKanban, LogOut, RotateCcw, Save, Trash2, XCircle, Pencil, PlusCircle, ImagePlus, Link2, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 import { usePortfolio } from "../context/PortfolioContext";
 import { defaultPortfolioData } from "../data/portfolioDefaults";
@@ -10,6 +10,34 @@ import StatsPanel from "./admin/StatsPanel";
 import AboutManagerPanel from "./admin/AboutManagerPanel";
 import SkillsManagerPanel from "./admin/SkillsManagerPanel";
 import ProjectsManagerPanel from "./admin/ProjectsManagerPanel";
+
+function SafePanel({ children, fallback = "This panel failed to load." }) {
+  const [error, setError] = useState(null);
+
+  if (error) {
+    return (
+      <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200">
+        <p className="font-semibold">Panel error</p>
+        <p className="mt-1">{fallback}</p>
+        <button
+          type="button"
+          onClick={() => setError(null)}
+          className="mt-3 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-700"
+        >
+          Retry
+        </button>
+      </div>
+    );
+  }
+
+  try {
+    return children;
+  } catch (renderError) {
+    console.error("[AdminDashboard] Panel render error:", renderError);
+    setError(renderError);
+    return null;
+  }
+}
 
 const TABS = [
   { id: "text", label: "Text Content", icon: FileText, color: "from-emerald-500 to-teal-500" },
@@ -42,6 +70,8 @@ export default function AdminDashboard() {
   const [status, setStatus] = useState("");
   const importInputRef = useRef(null);
 
+  console.log("[AdminDashboard] render:", { isLoading, hasPortfolioData: !!portfolioData, storageStatus });
+
   if (isLoading) {
     return (
       <section className="relative min-h-screen overflow-hidden py-6 sm:py-10 flex items-center justify-center">
@@ -57,21 +87,12 @@ export default function AdminDashboard() {
     );
   }
 
-  if (!portfolioData) {
-    return (
-      <section className="relative min-h-screen overflow-hidden py-6 sm:py-10 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-sm text-rose-600 dark:text-rose-400">Failed to load portfolio data.</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="mt-4 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white hover:bg-emerald-700"
-          >
-            Retry
-          </button>
-        </div>
-      </section>
-    );
-  }
+  const safePortfolio = portfolioData || {};
+  const projects = Array.isArray(safePortfolio.projects) ? safePortfolio.projects : [];
+  const skills = Array.isArray(safePortfolio.skills) ? safePortfolio.skills : [];
+  const stats = Array.isArray(safePortfolio.stats) ? safePortfolio.stats : [];
+  const hero = safePortfolio.hero || {};
+  const about = safePortfolio.about || {};
 
   const handleReset = async () => {
     if (!confirm("Reset all portfolio data to defaults? This cannot be undone.")) return;
@@ -167,18 +188,15 @@ export default function AdminDashboard() {
             </div>
           </motion.div>
 
-          <AnimatePresence>
-            {status && (
-              <motion.div
-                initial={{ opacity: 0, y: -10, height: 0 }}
-                animate={{ opacity: 1, y: 0, height: "auto" }}
-                exit={{ opacity: 0, y: -10, height: 0 }}
-                className="mt-4 overflow-hidden rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-800/70 dark:bg-emerald-950/90 dark:text-emerald-200"
-              >
-                {status}
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {status && (
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-800/70 dark:bg-emerald-950/90 dark:text-emerald-200"
+            >
+              {status}
+            </motion.div>
+          )}
         </motion.div>
 
         <motion.div variants={itemVariants} className="flex flex-wrap gap-2">
@@ -204,14 +222,33 @@ export default function AdminDashboard() {
           key={activeTab}
           initial={{ opacity: 0, y: 20, scale: 0.98 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          exit={{ opacity: 0, y: -20, scale: 0.98 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
         >
-          {activeTab === "text" && <TextContentPanel />}
-          {activeTab === "stats" && <StatsPanel />}
-          {activeTab === "about" && <AboutManagerPanel />}
-          {activeTab === "skills" && <SkillsManagerPanel />}
-          {activeTab === "projects" && <ProjectsManagerPanel />}
+          {activeTab === "text" && (
+            <SafePanel fallback="Text content panel failed to render.">
+              <TextContentPanel />
+            </SafePanel>
+          )}
+          {activeTab === "stats" && (
+            <SafePanel fallback="Stats panel failed to render.">
+              <StatsPanel />
+            </SafePanel>
+          )}
+          {activeTab === "about" && (
+            <SafePanel fallback="About panel failed to render.">
+              <AboutManagerPanel />
+            </SafePanel>
+          )}
+          {activeTab === "skills" && (
+            <SafePanel fallback="Skills panel failed to render.">
+              <SkillsManagerPanel />
+            </SafePanel>
+          )}
+          {activeTab === "projects" && (
+            <SafePanel fallback="Projects panel failed to render.">
+              <ProjectsManagerPanel />
+            </SafePanel>
+          )}
         </motion.div>
       </motion.div>
     </section>
