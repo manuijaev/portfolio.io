@@ -90,6 +90,26 @@ function normalizeProject(project, fallbackId = 1) {
   };
 }
 
+function getProjectKey(project) {
+  return String(project?.title || "").trim().toLowerCase();
+}
+
+function normalizeProjects(projectsSource) {
+  return projectsSource.map((project, index) => normalizeProject(project, index + 1));
+}
+
+function mergeDefaultProjects(projectsSource) {
+  const storedProjects = normalizeProjects(projectsSource);
+  const storedProjectKeys = new Set(storedProjects.map(getProjectKey).filter(Boolean));
+  const storedProjectIds = new Set(storedProjects.map((project) => Number(project.id)).filter(Boolean));
+  const missingDefaultProjects = normalizeProjects(defaultPortfolioData.projects).filter((project) => {
+    const projectKey = getProjectKey(project);
+    return !storedProjectIds.has(Number(project.id)) && (!projectKey || !storedProjectKeys.has(projectKey));
+  });
+
+  return [...storedProjects, ...missingDefaultProjects];
+}
+
 function normalizePortfolioData(input) {
   const source = input && typeof input === "object" ? input : defaultPortfolioData;
   const projectsSource = Array.isArray(source.projects) ? source.projects : defaultPortfolioData.projects;
@@ -100,7 +120,7 @@ function normalizePortfolioData(input) {
     about: normalizeAbout(source.about),
     stats: Array.isArray(source.stats) ? source.stats : defaultPortfolioData.stats,
     skills: skillsSource.map((skill, index) => normalizeSkill(skill, index + 1)),
-    projects: projectsSource.map((project, index) => normalizeProject(project, index + 1)),
+    projects: mergeDefaultProjects(projectsSource),
   };
 }
 
