@@ -252,6 +252,7 @@ export default function AdminDashboard() {
   const navigate = useNavigate();
   const {
     portfolioData,
+    storageStatus,
     updateHero,
     updateAbout,
     updateStats,
@@ -261,6 +262,8 @@ export default function AdminDashboard() {
     deleteProject,
     logoutAdmin,
     resetPortfolioData,
+    exportPortfolio,
+    importPortfolio,
   } = usePortfolio();
 
   const [heroBio, setHeroBio] = useState(portfolioData.hero.bio);
@@ -288,7 +291,9 @@ export default function AdminDashboard() {
     progress: 0,
     label: "",
   });
+  const [storageInfo, setStorageInfo] = useState({ used: 0, total: 0, percent: 0 });
   const heroImageInputRef = useRef(null);
+  const importInputRef = useRef(null);
 
   const statsForm = useMemo(() => portfolioData.stats.map((item) => ({ ...item })), [portfolioData.stats]);
   const [statsDraft, setStatsDraft] = useState(statsForm);
@@ -299,6 +304,31 @@ export default function AdminDashboard() {
 
   const statusMessage = typeof status === "string" ? status : status.message;
   const statusDetails = typeof status === "string" ? "" : status.details;
+
+  useEffect(() => {
+    const updateStorageInfo = () => {
+      try {
+        let used = 0;
+        for (const key in localStorage) {
+          if (localStorage.hasOwnProperty(key)) {
+            used += localStorage.getItem(key).length * 2; // UTF-16
+          }
+        }
+        const total = 5 * 1024 * 1024; // ~5MB typical limit
+        setStorageInfo({
+          used,
+          total,
+          percent: Math.min(100, Math.round((used / total) * 100)),
+        });
+      } catch {
+        setStorageInfo({ used: 0, total: 0, percent: 0 });
+      }
+    };
+
+    updateStorageInfo();
+    const interval = setInterval(updateStorageInfo, 5000);
+    return () => clearInterval(interval);
+  }, [portfolioData]);
   const isErrorStatus =
     typeof status === "object" && status.type === "error"
       ? true
@@ -306,6 +336,40 @@ export default function AdminDashboard() {
 
   const showToast = ({ message, type = "success", details = "" }) => {
     setStatus({ message, type, details });
+  };
+
+  const handleExport = () => {
+    const result = exportPortfolio();
+    if (result?.success) {
+      showToast({ message: "Portfolio exported.", details: "Save this JSON file to transfer to another device." });
+    } else {
+      showToast({ type: "error", message: result?.message || "Export failed." });
+    }
+  };
+
+  const handleImport = async (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const result = await importPortfolio(file);
+    if (result?.success) {
+      showToast({ message: "Portfolio imported.", details: "Refresh the page to see imported data." });
+      setHeroBio(portfolioData.hero.bio);
+      setHeroName(portfolioData.hero.headingName);
+      setAboutHeading(portfolioData.about.heading || "About Me");
+      setAboutIntro(portfolioData.about.intro);
+      setAboutStory(portfolioData.about.story || "");
+      setAboutAchievementsDraft(portfolioData.about.achievements || []);
+      setProfileImage(portfolioData.hero.profileImage);
+      setHeroRolesText(portfolioData.hero.typewriterRoles.join("\n"));
+      setStatsDraft(portfolioData.stats);
+      setSkillsDraft((portfolioData.skills || []).map((skill) => ({ ...skill })));
+      setProjectForm(getEmptyProject());
+      setEditingProjectId(null);
+    } else {
+      showToast({ type: "error", message: result?.message || "Import failed." });
+    }
+    event.target.value = "";
   };
 
   const getProjectSaveErrorDetails = (result) => {
@@ -622,6 +686,27 @@ export default function AdminDashboard() {
 
             <div className="grid w-full gap-2 sm:grid-cols-2 lg:w-auto">
               <button
+                onClick={handleExport}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+              >
+                <Save size={16} />
+                Export Data
+              </button>
+              <button
+                onClick={() => importInputRef.current?.click()}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-700"
+              >
+                <RotateCcw size={16} />
+                Import Data
+              </button>
+              <input
+                ref={importInputRef}
+                type="file"
+                accept="application/json"
+                onChange={handleImport}
+                className="hidden"
+              />
+              <button
                 onClick={async () => {
                   const result = await resetPortfolioData();
                   if (!result?.success) {
@@ -658,6 +743,19 @@ export default function AdminDashboard() {
                 <LogOut size={16} />
                 Logout
               </button>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-slate-200/80 dark:border-slate-700/80 bg-white/80 dark:bg-slate-900/80 p-3">
+            <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300">
+              <span>Storage: {storageStatus}</span>
+              <span>{storageInfo.percent}% used (~{Math.round(storageInfo.used / 1024)}KB / {Math.round(storageInfo.total / 1024)}KB)</span>
+            </div>
+            <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-700">
+              <div
+                className="h-full rounded-full bg-emerald-500 transition-all duration-500"
+                style={{ width: `${storageInfo.percent}%` }}
+              />
             </div>
           </div>
 

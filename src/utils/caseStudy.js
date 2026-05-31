@@ -43,11 +43,15 @@ export function getProjectVideo(project) {
   if (!video || typeof video !== "object") return null;
   if (typeof video.src !== "string" || !video.src.trim()) return null;
 
+  const src = video.src.trim();
+  const isDataUrl = src.startsWith("data:");
+
   return {
-    src: video.src,
+    src,
     name: String(video.name || "Project walkthrough"),
     type: String(video.type || "video/mp4"),
     size: Number(video.size) || 0,
+    isDataUrl,
   };
 }
 

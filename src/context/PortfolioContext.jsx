@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { defaultPortfolioData } from "../data/portfolioDefaults";
+import { saveToIndexedDB, loadFromIndexedDB, clearIndexedDB, exportDataAsJSON, importDataFromJSON } from "../utils/storage";
 
 const STORAGE_KEY = "portfolio_data_v1";
 const SESSION_KEY = "portfolio_admin_session_v1";
@@ -160,6 +161,7 @@ export function PortfolioProvider({ children }) {
   const [adminSession, setAdminSession] = useState(() =>
     safelyReadStorage(SESSION_KEY, { authenticated: false, email: "" })
   );
+  const [storageStatus, setStorageStatus] = useState("localStorage");
   const portfolioDataRef = useRef(portfolioData);
   const adminSessionRef = useRef(adminSession);
 
@@ -170,6 +172,35 @@ export function PortfolioProvider({ children }) {
   useEffect(() => {
     adminSessionRef.current = adminSession;
   }, [adminSession]);
+
+  // Load from IndexedDB on mount (preferred over localStorage for larger data)
+  useEffect(() => {
+    let isMounted = true;
+
+    loadFromIndexedDB()
+      .then((remoteData) => {
+        if (!isMounted || !remoteData) return;
+        const incoming = normalizePortfolioData(remoteData);
+        portfolioDataRef.current = incoming;
+        setPortfolioData(incoming);
+        setStorageStatus("IndexedDB");
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(incoming));
+        } catch {
+          // IndexedDB is primary, localStorage is just a cache
+        }
+      })
+      .catch((error) => {
+        console.warn("[Portfolio] IndexedDB load failed, using localStorage:", error);
+        if (isMounted) {
+          setStorageStatus("localStorage (IndexedDB unavailable)");
+        }
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const persistPortfolioData = async (updater) => {
     const nextData = normalizePortfolioData(
@@ -189,6 +220,17 @@ export function PortfolioProvider({ children }) {
 
     try {
       const serialized = JSON.stringify(nextData);
+
+      // Try IndexedDB first (larger capacity)
+      try {
+        await saveToIndexedDB(nextData);
+        setStorageStatus("IndexedDB");
+      } catch (indexedDBError) {
+        console.warn("[Portfolio] IndexedDB save failed, falling back to localStorage:", indexedDBError);
+        setStorageStatus("localStorage (IndexedDB failed)");
+      }
+
+      // Always update localStorage as cache/fallback
       localStorage.setItem(STORAGE_KEY, serialized);
       portfolioDataRef.current = nextData;
       setPortfolioData(nextData);
@@ -276,7 +318,39 @@ export function PortfolioProvider({ children }) {
   };
 
   const resetPortfolioData = async () => {
+    try {
+      await clearIndexedDB();
+    } catch (error) {
+      console.warn("[Portfolio] IndexedDB clear failed:", error);
+    }
+    localStorage.removeItem(STORAGE_KEY);
     return persistPortfolioData(() => defaultPortfolioData);
+  };
+
+  const exportPortfolio = () => {
+    try {
+      exportDataAsJSON(portfolioData);
+      return { success: true, message: "Portfolio exported successfully." };
+    } catch (error) {
+      return {
+        success: false,
+        message: `Export failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      };
+    }
+  };
+
+  const importPortfolio = async (file) => {
+    try {
+      const data = await importDataFromJSON(file);
+      const normalized = normalizePortfolioData(data);
+      const result = await persistPortfolioData(() => normalized);
+      return result;
+    } catch (error) {
+      return {
+        success: false,
+        message: `Import failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+      };
+    }
   };
 
   const loginAdmin = async ({ email, password }) => {
@@ -324,6 +398,7 @@ export function PortfolioProvider({ children }) {
   const value = useMemo(
     () => ({
       portfolioData,
+      storageStatus,
       updateHero,
       updateAbout,
       updateStats,
@@ -332,11 +407,13 @@ export function PortfolioProvider({ children }) {
       updateProject,
       deleteProject,
       resetPortfolioData,
+      exportPortfolio,
+      importPortfolio,
       adminSession,
       loginAdmin,
       logoutAdmin,
     }),
-    [portfolioData, adminSession]
+    [portfolioData, adminSession, storageStatus]
   );
 
   return <PortfolioContext.Provider value={value}>{children}</PortfolioContext.Provider>;

@@ -149,7 +149,7 @@ export default function ProjectCaseStudy() {
                   controls
                   playsInline
                   preload="metadata"
-                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-black"
+                  className="w-full max-h-[70vh] rounded-xl border border-slate-200 dark:border-slate-700 bg-black"
                   src={video.src}
                 >
                   Your browser does not support the video tag.
