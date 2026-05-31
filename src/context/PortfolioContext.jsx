@@ -162,6 +162,7 @@ export function PortfolioProvider({ children }) {
     safelyReadStorage(SESSION_KEY, { authenticated: false, email: "" })
   );
   const [storageStatus, setStorageStatus] = useState("localStorage");
+  const [isLoading, setIsLoading] = useState(true);
   const portfolioDataRef = useRef(portfolioData);
   const adminSessionRef = useRef(adminSession);
 
@@ -177,28 +178,45 @@ export function PortfolioProvider({ children }) {
   useEffect(() => {
     let isMounted = true;
 
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        console.warn("[Portfolio] IndexedDB load timed out, using localStorage");
+        setStorageStatus("localStorage (IndexedDB timeout)");
+        setIsLoading(false);
+      }
+    }, 1500);
+
     loadFromIndexedDB()
       .then((remoteData) => {
-        if (!isMounted || !remoteData) return;
-        const incoming = normalizePortfolioData(remoteData);
-        portfolioDataRef.current = incoming;
-        setPortfolioData(incoming);
-        setStorageStatus("IndexedDB");
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(incoming));
-        } catch {
-          // IndexedDB is primary, localStorage is just a cache
+        clearTimeout(timeoutId);
+        if (!isMounted) return;
+        if (remoteData) {
+          const incoming = normalizePortfolioData(remoteData);
+          portfolioDataRef.current = incoming;
+          setPortfolioData(incoming);
+          setStorageStatus("IndexedDB");
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(incoming));
+          } catch {
+            // IndexedDB is primary, localStorage is just a cache
+          }
+        }
+        if (isMounted) {
+          setIsLoading(false);
         }
       })
       .catch((error) => {
+        clearTimeout(timeoutId);
         console.warn("[Portfolio] IndexedDB load failed, using localStorage:", error);
         if (isMounted) {
           setStorageStatus("localStorage (IndexedDB unavailable)");
+          setIsLoading(false);
         }
       });
 
     return () => {
       isMounted = false;
+      clearTimeout(timeoutId);
     };
   }, []);
 
@@ -399,6 +417,7 @@ export function PortfolioProvider({ children }) {
     () => ({
       portfolioData,
       storageStatus,
+      isLoading,
       updateHero,
       updateAbout,
       updateStats,
@@ -413,7 +432,7 @@ export function PortfolioProvider({ children }) {
       loginAdmin,
       logoutAdmin,
     }),
-    [portfolioData, adminSession, storageStatus]
+    [portfolioData, adminSession, storageStatus, isLoading]
   );
 
   return <PortfolioContext.Provider value={value}>{children}</PortfolioContext.Provider>;
