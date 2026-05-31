@@ -174,6 +174,8 @@ async function saveRemotePortfolioData(data) {
     return {
       success: false,
       status: response.status,
+      reason: response.statusText || "Request failed",
+      details: payload?.message || "",
       message:
         response.status === 401
           ? "Your admin session expired. Log out, log in again, then save."
@@ -182,6 +184,8 @@ async function saveRemotePortfolioData(data) {
   } catch {
     return {
       success: false,
+      reason: "Network request failed",
+      details: "The browser could not reach the shared portfolio API.",
       message: "Shared storage is unavailable. Check your deployment environment variables.",
     };
   }

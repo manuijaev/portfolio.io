@@ -283,6 +283,11 @@ export default function AdminDashboard() {
   const [skillForm, setSkillForm] = useState({ name: "", category: "Frontend", experience: 60 });
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [status, setStatus] = useState("");
+  const [projectSaveState, setProjectSaveState] = useState({
+    isSaving: false,
+    progress: 0,
+    label: "",
+  });
   const heroImageInputRef = useRef(null);
 
   const statsForm = useMemo(() => portfolioData.stats.map((item) => ({ ...item })), [portfolioData.stats]);
@@ -291,6 +296,25 @@ export default function AdminDashboard() {
     const query = technologySearch.trim().toLowerCase();
     return TECHNOLOGY_OPTIONS.filter((tech) => tech.toLowerCase().includes(query)).slice(0, 80);
   }, [technologySearch]);
+
+  const statusMessage = typeof status === "string" ? status : status.message;
+  const statusDetails = typeof status === "string" ? "" : status.details;
+  const isErrorStatus =
+    typeof status === "object" && status.type === "error"
+      ? true
+      : /failed|invalid|too large|expired|unavailable|please/i.test(statusMessage || "");
+
+  const showToast = ({ message, type = "success", details = "" }) => {
+    setStatus({ message, type, details });
+  };
+
+  const getProjectSaveErrorDetails = (result) => {
+    const parts = [];
+    if (result?.status) parts.push(`HTTP ${result.status}`);
+    if (result?.reason) parts.push(result.reason);
+    if (result?.details && result.details !== result.message) parts.push(result.details);
+    return parts.join(" - ");
+  };
 
   const handleProjectImageUpload = (event) => {
     const file = event.target.files?.[0];
@@ -448,6 +472,9 @@ export default function AdminDashboard() {
   };
 
   const handleProjectSave = async () => {
+    if (projectSaveState.isSaving) return;
+
+    setProjectSaveState({ isSaving: true, progress: 10, label: "Validating project details..." });
     const normalizedProjectLink = getProjectLink({ link: projectForm.link });
     const payload = {
       title: projectForm.title.trim(),
@@ -471,20 +498,47 @@ export default function AdminDashboard() {
     };
 
     if (!payload.title || !payload.image || !payload.description || !payload.link) {
-      setStatus("Please fill all project fields and provide a valid live URL (e.g. https://example.com).");
+      setProjectSaveState({ isSaving: false, progress: 0, label: "" });
+      showToast({
+        type: "error",
+        message: "Project cannot be saved yet.",
+        details: "Fill the title, image, description, and a valid live URL such as https://example.com.",
+      });
       return;
     }
+
+    setProjectSaveState({ isSaving: true, progress: 35, label: "Preparing project payload..." });
+    setStatus("");
+
+    window.setTimeout(() => {
+      setProjectSaveState((prev) =>
+        prev.isSaving ? { isSaving: true, progress: Math.max(prev.progress, 70), label: "Publishing to shared storage..." } : prev
+      );
+    }, 150);
 
     const result = editingProjectId ? await updateProject(editingProjectId, payload) : await addProject(payload);
     if (!result?.success) {
-      setStatus(result?.message || "Failed to save project.");
+      setProjectSaveState({ isSaving: false, progress: 0, label: "" });
+      showToast({
+        type: "error",
+        message: result?.message || "Failed to save project.",
+        details: getProjectSaveErrorDetails(result) || "No extra error details were returned by the server.",
+      });
       return;
     }
 
-    setStatus(editingProjectId ? "Project updated." : "Project added.");
+    setProjectSaveState({ isSaving: false, progress: 100, label: "Published successfully." });
+    showToast({
+      type: "success",
+      message: editingProjectId ? "Project updated." : "Project added.",
+      details: "The project was saved to shared storage and should be visible on mobile after refresh.",
+    });
 
     setEditingProjectId(null);
     setProjectForm(getEmptyProject());
+    window.setTimeout(() => {
+      setProjectSaveState({ isSaving: false, progress: 0, label: "" });
+    }, 1200);
   };
 
   const startEditProject = (project) => {
@@ -588,14 +642,19 @@ export default function AdminDashboard() {
             </div>
           </div>
 
-          {status ? (
+          {statusMessage ? (
             <MotionP
-              key={status}
+              key={`${statusMessage}-${statusDetails}`}
               initial={{ opacity: 0, y: -6 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-sm text-emerald-700 dark:border-emerald-800/70 dark:bg-emerald-950/40 dark:text-emerald-300"
+              className={`fixed right-4 top-20 z-50 max-w-md rounded-xl border px-4 py-3 text-sm shadow-xl backdrop-blur ${
+                isErrorStatus
+                  ? "border-rose-200 bg-rose-50/95 text-rose-800 dark:border-rose-800/70 dark:bg-rose-950/90 dark:text-rose-200"
+                  : "border-emerald-200 bg-emerald-50/95 text-emerald-800 dark:border-emerald-800/70 dark:bg-emerald-950/90 dark:text-emerald-200"
+              }`}
             >
-              {status}
+              <span className="block font-semibold">{statusMessage}</span>
+              {statusDetails ? <span className="mt-1 block text-xs opacity-85">{statusDetails}</span> : null}
             </MotionP>
           ) : null}
         </MotionDiv>
@@ -1137,10 +1196,11 @@ export default function AdminDashboard() {
               <div className="sm:col-span-2 grid gap-2 sm:grid-cols-2">
                 <button
                   onClick={handleProjectSave}
-                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
+                  disabled={projectSaveState.isSaving}
+                  className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-700/70"
                 >
                   {editingProjectId ? <Save size={16} /> : <PlusCircle size={16} />}
-                  {editingProjectId ? "Update Project" : "Add Project"}
+                  {projectSaveState.isSaving ? "Saving..." : editingProjectId ? "Update Project" : "Add Project"}
                 </button>
                 <button
                   onClick={() => {
@@ -1153,6 +1213,20 @@ export default function AdminDashboard() {
                   Clear Form
                 </button>
               </div>
+              {(projectSaveState.isSaving || projectSaveState.progress > 0) ? (
+                <div className="sm:col-span-2 rounded-xl border border-emerald-200 bg-emerald-50 p-3 dark:border-emerald-800/70 dark:bg-emerald-950/40">
+                  <div className="mb-2 flex items-center justify-between gap-3 text-xs font-medium text-emerald-800 dark:text-emerald-200">
+                    <span>{projectSaveState.label || "Saving project..."}</span>
+                    <span>{projectSaveState.progress}%</span>
+                  </div>
+                  <div className="h-2 overflow-hidden rounded-full bg-emerald-100 dark:bg-emerald-900">
+                    <div
+                      className="h-full rounded-full bg-emerald-600 transition-all duration-500"
+                      style={{ width: `${projectSaveState.progress}%` }}
+                    />
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <div className="rounded-xl border border-slate-200/90 dark:border-slate-700 bg-slate-50/70 dark:bg-slate-950/40 p-3 sm:p-4">
