@@ -316,8 +316,8 @@ export default function AdminDashboard() {
       return;
     }
 
-    if (file.size > 20 * 1024 * 1024) {
-      setStatus("Video is too large for browser storage. Use a video under 20MB.");
+    if (file.size > 40 * 1024 * 1024) {
+      setStatus("This video is too large for direct portfolio storage. Use a hosted video URL below for larger videos.");
       return;
     }
 
@@ -332,7 +332,7 @@ export default function AdminDashboard() {
           size: file.size,
         },
       }));
-      setStatus("Video selected. Save project to persist.");
+      setStatus("Small video selected. Save project to publish it.");
     };
     reader.readAsDataURL(file);
   };
@@ -346,8 +346,8 @@ export default function AdminDashboard() {
     }));
   };
 
-  const persistTextContent = () => {
-    const heroResult = updateHero({
+  const persistTextContent = async () => {
+    const heroResult = await updateHero({
       headingName: heroName,
       bio: heroBio,
       profileImage,
@@ -363,8 +363,8 @@ export default function AdminDashboard() {
     setStatus("Hero content saved.");
   };
 
-  const persistAboutContent = () => {
-    const result = updateAbout({
+  const persistAboutContent = async () => {
+    const result = await updateAbout({
       heading: aboutHeading.trim() || "About Me",
       intro: aboutIntro.trim(),
       story: aboutStory.trim(),
@@ -377,8 +377,8 @@ export default function AdminDashboard() {
     setStatus("About content saved.");
   };
 
-  const persistStats = () => {
-    const result = updateStats(statsDraft.map((item) => ({ ...item, value: Number(item.value) || 0 })));
+  const persistStats = async () => {
+    const result = await updateStats(statsDraft.map((item) => ({ ...item, value: Number(item.value) || 0 })));
     if (!result?.success) {
       setStatus(result.message || "Failed to save stats.");
       return;
@@ -386,7 +386,7 @@ export default function AdminDashboard() {
     setStatus("Stats saved.");
   };
 
-  const persistSkills = () => {
+  const persistSkills = async () => {
     const sanitizedSkills = skillsDraft
       .map((skill, index) => ({
         id: Number(skill.id) || index + 1,
@@ -396,7 +396,7 @@ export default function AdminDashboard() {
       }))
       .filter((skill) => skill.name);
 
-    const result = updateSkills(sanitizedSkills);
+    const result = await updateSkills(sanitizedSkills);
     if (!result?.success) {
       setStatus(result?.message || "Failed to save skills.");
       return;
@@ -447,7 +447,7 @@ export default function AdminDashboard() {
     reader.readAsDataURL(file);
   };
 
-  const handleProjectSave = () => {
+  const handleProjectSave = async () => {
     const normalizedProjectLink = getProjectLink({ link: projectForm.link });
     const payload = {
       title: projectForm.title.trim(),
@@ -475,7 +475,7 @@ export default function AdminDashboard() {
       return;
     }
 
-    const result = editingProjectId ? updateProject(editingProjectId, payload) : addProject(payload);
+    const result = editingProjectId ? await updateProject(editingProjectId, payload) : await addProject(payload);
     if (!result?.success) {
       setStatus(result?.message || "Failed to save project.");
       return;
@@ -549,8 +549,12 @@ export default function AdminDashboard() {
 
             <div className="grid w-full gap-2 sm:grid-cols-2 lg:w-auto">
               <button
-                onClick={() => {
-                  resetPortfolioData();
+                onClick={async () => {
+                  const result = await resetPortfolioData();
+                  if (!result?.success) {
+                    setStatus(result?.message || "Failed to reset portfolio data.");
+                    return;
+                  }
                   setHeroBio(defaultPortfolioData.hero.bio);
                   setHeroName(defaultPortfolioData.hero.headingName);
                   setAboutHeading(defaultPortfolioData.about.heading || "About Me");
@@ -1074,16 +1078,35 @@ export default function AdminDashboard() {
               </div>
 
               <div className="sm:col-span-2 rounded-xl border border-dashed border-slate-300/90 dark:border-slate-600 bg-white/70 dark:bg-slate-950/40 p-3">
-                <FieldLabel>Upload Case Study Video (Optional)</FieldLabel>
+                <FieldLabel>Case Study Video (Optional)</FieldLabel>
+                <InputBase
+                  value={
+                    projectForm.videoPresentation?.src?.startsWith("data:")
+                      ? ""
+                      : projectForm.videoPresentation?.src || ""
+                  }
+                  onChange={(event) =>
+                    setProjectForm((prev) => ({
+                      ...prev,
+                      videoPresentation: {
+                        src: event.target.value,
+                        name: event.target.value ? "Hosted project video" : "",
+                        type: "",
+                        size: 0,
+                      },
+                    }))
+                  }
+                  placeholder="Paste a hosted MP4/WebM, YouTube, or Vimeo URL"
+                />
+                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                  A hosted URL is best for mobile playback. Direct uploads up to 40MB are also supported.
+                </p>
                 <input
                   type="file"
                   accept="video/*"
                   onChange={handleProjectVideoUpload}
-                  className="w-full text-sm text-slate-700 dark:text-slate-300 file:mr-4 file:rounded-lg file:border-0 file:bg-cyan-600 file:px-3 file:py-2 file:text-white hover:file:bg-cyan-700"
+                  className="mt-3 w-full text-sm text-slate-700 dark:text-slate-300 file:mr-4 file:rounded-lg file:border-0 file:bg-cyan-600 file:px-3 file:py-2 file:text-white hover:file:bg-cyan-700"
                 />
-                <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                  For reliable localStorage persistence, keep videos below 20MB.
-                </p>
                 {projectForm.videoPresentation?.src ? (
                   <div className="mt-3 rounded-lg border border-slate-200 dark:border-slate-700 p-2">
                     <video
@@ -1168,8 +1191,8 @@ export default function AdminDashboard() {
                         Edit
                       </button>
                       <button
-                        onClick={() => {
-                          const result = deleteProject(project.id);
+                        onClick={async () => {
+                          const result = await deleteProject(project.id);
                           if (!result?.success) {
                             setStatus(result?.message || "Failed to delete project.");
                             return;

@@ -135,6 +135,10 @@ function safelyReadStorage(key, fallback) {
   }
 }
 
+function isLocalDevelopment() {
+  return ["localhost", "127.0.0.1"].includes(window.location.hostname);
+}
+
 async function fetchRemotePortfolioData() {
   try {
     const response = await fetch(REMOTE_DATA_ENDPOINT, {
@@ -162,9 +166,24 @@ async function saveRemotePortfolioData(data) {
       body: JSON.stringify(data),
     });
 
-    return response.ok;
+    if (response.ok) {
+      return { success: true };
+    }
+
+    const payload = await response.json().catch(() => ({}));
+    return {
+      success: false,
+      status: response.status,
+      message:
+        response.status === 401
+          ? "Your admin session expired. Log out, log in again, then save."
+          : payload?.message || "Failed to save portfolio data to shared storage.",
+    };
   } catch {
-    return false;
+    return {
+      success: false,
+      message: "Shared storage is unavailable. Check your deployment environment variables.",
+    };
   }
 }
 
@@ -229,16 +248,26 @@ export function PortfolioProvider({ children }) {
     };
   }, []);
 
-  const persistPortfolioData = (updater) => {
+  const persistPortfolioData = async (updater) => {
     const nextData = normalizePortfolioData(
       typeof updater === "function" ? updater(portfolioDataRef.current) : updater
     );
     try {
       const serialized = JSON.stringify(nextData);
+      const remoteResult = await saveRemotePortfolioData(nextData);
+      if (!remoteResult.success) {
+        if (remoteResult.status === 401) {
+          const session = { authenticated: false, email: "" };
+          adminSessionRef.current = session;
+          setAdminSession(session);
+          localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        }
+        return remoteResult;
+      }
+
       localStorage.setItem(STORAGE_KEY, serialized);
       portfolioDataRef.current = nextData;
       setPortfolioData(nextData);
-      saveRemotePortfolioData(nextData);
       return { success: true };
     } catch (error) {
       return {
@@ -251,28 +280,28 @@ export function PortfolioProvider({ children }) {
     }
   };
 
-  const updateHero = (heroPatch) => {
+  const updateHero = async (heroPatch) => {
     return persistPortfolioData((prev) => ({
       ...prev,
       hero: { ...prev.hero, ...heroPatch },
     }));
   };
 
-  const updateAbout = (aboutPatch) => {
+  const updateAbout = async (aboutPatch) => {
     return persistPortfolioData((prev) => ({
       ...prev,
       about: { ...prev.about, ...aboutPatch },
     }));
   };
 
-  const updateStats = (nextStats) => {
+  const updateStats = async (nextStats) => {
     return persistPortfolioData((prev) => ({
       ...prev,
       stats: nextStats,
     }));
   };
 
-  const updateSkills = (nextSkills) => {
+  const updateSkills = async (nextSkills) => {
     return persistPortfolioData((prev) => ({
       ...prev,
       skills: Array.isArray(nextSkills)
@@ -281,7 +310,7 @@ export function PortfolioProvider({ children }) {
     }));
   };
 
-  const addProject = (projectInput) => {
+  const addProject = async (projectInput) => {
     return persistPortfolioData((prev) => {
       const maxId = prev.projects.reduce((max, project) => Math.max(max, Number(project.id) || 0), 0);
       const newProject = normalizeProject({ ...projectInput, id: maxId + 1 }, maxId + 1);
@@ -292,7 +321,7 @@ export function PortfolioProvider({ children }) {
     });
   };
 
-  const updateProject = (projectId, projectPatch) => {
+  const updateProject = async (projectId, projectPatch) => {
     return persistPortfolioData((prev) => ({
       ...prev,
       projects: prev.projects.map((project) =>
@@ -301,14 +330,14 @@ export function PortfolioProvider({ children }) {
     }));
   };
 
-  const deleteProject = (projectId) => {
+  const deleteProject = async (projectId) => {
     return persistPortfolioData((prev) => ({
       ...prev,
       projects: prev.projects.filter((project) => project.id !== projectId),
     }));
   };
 
-  const resetPortfolioData = () => {
+  const resetPortfolioData = async () => {
     return persistPortfolioData(() => defaultPortfolioData);
   };
 
@@ -316,6 +345,16 @@ export function PortfolioProvider({ children }) {
     const remoteResult = await loginRemoteAdmin({ email, password });
     if (remoteResult && !remoteResult.success) {
       return remoteResult;
+    }
+    if (remoteResult?.success) {
+      const session = { authenticated: true, email: email.trim() };
+      adminSessionRef.current = session;
+      setAdminSession(session);
+      localStorage.setItem(SESSION_KEY, JSON.stringify(session));
+      return { success: true };
+    }
+    if (!remoteResult && !isLocalDevelopment()) {
+      return { success: false, message: "Admin login service is unavailable. Check Vercel environment variables and redeploy." };
     }
 
     const isValid =

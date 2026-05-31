@@ -20,6 +20,7 @@ export default function ProjectCaseStudy() {
 
   const caseStudy = buildCaseStudy(project);
   const video = getProjectVideo(project);
+  const videoEmbed = video ? getVideoEmbed(video.src) : null;
   const projectLink = getProjectLink(project);
 
   return (
@@ -135,9 +136,25 @@ export default function ProjectCaseStudy() {
 
           {video ? (
             <>
-              <video controls preload="metadata" className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-black" src={video.src}>
-                Your browser does not support the video tag.
-              </video>
+              {videoEmbed ? (
+                <iframe
+                  title={`${project.title} video presentation`}
+                  src={videoEmbed}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="aspect-video w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-black"
+                />
+              ) : (
+                <video
+                  controls
+                  playsInline
+                  preload="metadata"
+                  className="w-full rounded-xl border border-slate-200 dark:border-slate-700 bg-black"
+                  src={video.src}
+                >
+                  Your browser does not support the video tag.
+                </video>
+              )}
               <p className="mt-2 text-xs text-slate-500 dark:text-slate-400">
                 {video.name} • {formatBytes(video.size)}
               </p>
@@ -154,6 +171,31 @@ export default function ProjectCaseStudy() {
       </div>
     </section>
   );
+}
+
+function getVideoEmbed(src) {
+  try {
+    const url = new URL(src);
+    const host = url.hostname.replace(/^www\./, "");
+
+    if (host === "youtu.be") {
+      return `https://www.youtube.com/embed/${url.pathname.slice(1)}`;
+    }
+
+    if (host === "youtube.com" || host === "m.youtube.com") {
+      const videoId = url.searchParams.get("v");
+      return videoId ? `https://www.youtube.com/embed/${videoId}` : "";
+    }
+
+    if (host === "vimeo.com") {
+      const videoId = url.pathname.split("/").filter(Boolean)[0];
+      return videoId ? `https://player.vimeo.com/video/${videoId}` : "";
+    }
+
+    return "";
+  } catch {
+    return "";
+  }
 }
 
 function CaseCard({ icon: Icon, title, content }) {
