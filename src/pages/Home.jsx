@@ -63,7 +63,7 @@ export default function Home() {
             </GlassButton>
 
             <GlassButton
-              as={Link}
+              Component={Link}
               to="/projects"
               color="blue"
               size="lg"

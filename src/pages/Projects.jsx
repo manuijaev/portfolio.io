@@ -171,7 +171,7 @@ export default function Projects() {
                       Visit Site
                     </GlassButton>
                     <GlassButton
-                      as={Link}
+                      Component={Link}
                       to={`/projects/${project.id}/case-study`}
                       color="blue"
                       size="md"

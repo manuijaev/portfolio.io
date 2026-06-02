@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "react-router-dom";
 
 const glassVariants = {
   idle: {
@@ -51,6 +52,7 @@ export default function GlassButton({
   size = "md",
   icon: Icon,
   iconPosition = "left",
+  as: Component,
   ...props
 }) {
   const colorClasses = {
@@ -109,9 +111,28 @@ export default function GlassButton({
     </>
   );
 
+  const MotionLink = motion(Link);
+  const MotionAnchor = motion.a;
+
+  if (Component) {
+    const MotionComponent = motion(Component);
+    return (
+      <MotionComponent
+        variants={glassVariants}
+        initial="idle"
+        whileHover="hover"
+        whileTap="tap"
+        className={baseClasses}
+        {...props}
+      >
+        {content}
+      </MotionComponent>
+    );
+  }
+
   if (href) {
     return (
-      <motion.a
+      <MotionAnchor
         href={href}
         variants={glassVariants}
         initial="idle"
@@ -121,7 +142,7 @@ export default function GlassButton({
         {...props}
       >
         {content}
-      </motion.a>
+      </MotionAnchor>
     );
   }
 
