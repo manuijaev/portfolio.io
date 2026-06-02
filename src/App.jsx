@@ -22,7 +22,7 @@ export default function App() {
             <Navbar />
 
             {/* Main content */}
-            <main className="flex-grow container mx-auto px-4 py-4 sm:py-6">
+            <main className="flex-grow container mx-auto px-4 pt-20 sm:pt-24 pb-4 sm:pb-6">
               <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/about" element={<About />} />
