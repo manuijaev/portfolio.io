@@ -1,4 +1,14 @@
 export const defaultPortfolioData = {
+  footer: {
+    tagline: "I'm open to opportunities in web development, frontend engineering, and full-stack projects.",
+    socialLinks: [
+      { platform: "Email", url: "mailto:kenyaniemmanuel44@gmail.com", icon: "Mail" },
+      { platform: "GitHub", url: "https://github.com/manuijaev", icon: "Github" },
+      { platform: "LinkedIn", url: "https://www.linkedin.com/in/emmanuel-kenyani-48b763383", icon: "Linkedin" },
+    ],
+    adminLink: "/admin/login",
+    adminLabel: "Admin Login",
+  },
   hero: {
     headingName: "Emmanuel Kenyani",
     typewriterRoles: [

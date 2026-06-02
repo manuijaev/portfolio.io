@@ -11,6 +11,7 @@ import StatsPanel from "./admin/StatsPanel";
 import AboutManagerPanel from "./admin/AboutManagerPanel";
 import SkillsManagerPanel from "./admin/SkillsManagerPanel";
 import ProjectsManagerPanel from "./admin/ProjectsManagerPanel";
+import FooterManagerPanel from "./admin/FooterManagerPanel";
 
 function SafePanel({ children, fallback = "This panel failed to load." }) {
   const [error, setError] = useState(null);
@@ -48,6 +49,7 @@ const TABS = [
   { id: "about", label: "About", icon: FileText, color: "from-blue-500 to-cyan-500" },
   { id: "skills", label: "Skills", icon: BarChart3, color: "from-blue-500 to-cyan-500" },
   { id: "projects", label: "Projects", icon: FolderKanban, color: "from-blue-500 to-cyan-500" },
+  { id: "footer", label: "Footer", icon: FileText, color: "from-blue-500 to-cyan-500" },
 ];
 
 const containerVariants = {
@@ -232,6 +234,11 @@ export default function AdminDashboard() {
           {activeTab === "projects" && (
             <SafePanel fallback="Projects panel failed to render.">
               <ProjectsManagerPanel />
+            </SafePanel>
+          )}
+          {activeTab === "footer" && (
+            <SafePanel fallback="Footer panel failed to render.">
+              <FooterManagerPanel />
             </SafePanel>
           )}
         </motion.div>

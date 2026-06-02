@@ -177,6 +177,7 @@ export default function Projects() {
                     >
                       <Link
                         to={`/projects/${project.id}/case-study`}
+                        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
                         className="flex items-center justify-center gap-2 rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 px-5 py-2.5 text-base font-semibold text-blue-700 dark:text-blue-300 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/60"
                       >
                         Case Study

@@ -123,6 +123,7 @@ function normalizePortfolioData(input) {
     stats: Array.isArray(source.stats) ? source.stats : defaultPortfolioData.stats,
     skills: skillsSource.map((skill, index) => normalizeSkill(skill, index + 1)),
     projects: mergeDefaultProjects(projectsSource),
+    footer: source.footer || defaultPortfolioData.footer || {},
   };
 }
 
@@ -292,6 +293,13 @@ export function PortfolioProvider({ children }) {
     }));
   };
 
+  const updateFooter = async (footerPatch) => {
+    return persistPortfolioData((prev) => ({
+      ...prev,
+      footer: { ...(prev.footer || {}), ...footerPatch },
+    }));
+  };
+
   const updateStats = async (nextStats) => {
     return persistPortfolioData((prev) => ({
       ...prev,
@@ -420,6 +428,7 @@ export function PortfolioProvider({ children }) {
       isLoading,
       updateHero,
       updateAbout,
+      updateFooter,
       updateStats,
       updateSkills,
       addProject,

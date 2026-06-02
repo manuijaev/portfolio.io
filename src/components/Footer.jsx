@@ -1,8 +1,23 @@
-import { Github, Linkedin, Mail } from "lucide-react";
+import { Github, Linkedin, Mail, ExternalLink } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { usePortfolio } from "../context/PortfolioContext";
+
+const iconMap = {
+  Mail,
+  Github,
+  Linkedin,
+  ExternalLink,
+};
 
 export default function Footer() {
+  const { portfolioData } = usePortfolio();
+  const footer = portfolioData.footer || {};
+  const tagline = footer.tagline || "I'm open to opportunities in web development, frontend engineering, and full-stack projects.";
+  const socialLinks = Array.isArray(footer.socialLinks) ? footer.socialLinks : [];
+  const adminLink = footer.adminLink || "/admin/login";
+  const adminLabel = footer.adminLabel || "Admin Login";
+
   return (
     <footer className="bg-gray-900 text-white py-6 sm:py-8 mt-8 sm:mt-12">
       <motion.div
@@ -19,8 +34,7 @@ export default function Footer() {
           transition={{ delay: 0.4 }}
           className="text-sm sm:text-base text-center md:text-left flex-1 max-w-md"
         >
-          I’m open to opportunities in web development,
-          frontend engineering, and full-stack projects.
+          {tagline}
         </motion.p>
 
         {/* Social */}
@@ -33,51 +47,30 @@ export default function Footer() {
           <p className="text-sm sm:text-base tracking-wide mb-2 sm:mb-0">Let's Connect</p>
 
           <div className="flex space-x-4 sm:space-x-6">
-            {/* Mail */}
-            <motion.a
-              whileHover={{ scale: 1.15, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              href="mailto:kenyaniemmanuel44@gmail.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gray-400 transition-colors duration-200 p-2 rounded-full hover:bg-gray-800 touch-manipulation"
-              aria-label="Send email"
-            >
-              <Mail className="w-5 h-5 sm:w-6 sm:h-6" />
-            </motion.a>
-
-            {/* Github */}
-            <motion.a
-              whileHover={{ scale: 1.15, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              href="https://github.com/manuijaev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gray-400 transition-colors duration-200 p-2 rounded-full hover:bg-gray-800 touch-manipulation"
-              aria-label="Visit GitHub"
-            >
-              <Github className="w-5 h-5 sm:w-6 sm:h-6" />
-            </motion.a>
-
-            {/* LinkedIn */}
-            <motion.a
-              whileHover={{ scale: 1.15, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              href="https://www.linkedin.com/in/emmanuel-kenyani-48b763383"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-gray-400 transition-colors duration-200 p-2 rounded-full hover:bg-gray-800 touch-manipulation"
-              aria-label="Visit LinkedIn"
-            >
-              <Linkedin className="w-5 h-5 sm:w-6 sm:h-6" />
-            </motion.a>
+            {socialLinks.map((link, index) => {
+              const IconComponent = iconMap[link.icon] || ExternalLink;
+              return (
+                <motion.a
+                  key={`${link.platform}-${index}`}
+                  whileHover={{ scale: 1.15, y: -2 }}
+                  whileTap={{ scale: 0.95 }}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-gray-400 transition-colors duration-200 p-2 rounded-full hover:bg-gray-800 touch-manipulation"
+                  aria-label={link.platform}
+                >
+                  <IconComponent className="w-5 h-5 sm:w-6 sm:h-6" />
+                </motion.a>
+              );
+            })}
           </div>
 
           <Link
-            to="/admin/login"
+            to={adminLink}
             className="text-xs sm:text-sm px-3 py-1.5 rounded-lg border border-gray-600 hover:border-gray-400 text-gray-300 hover:text-white transition-colors"
           >
-            Admin Login
+            {adminLabel}
           </Link>
         </motion.div>
       </motion.div>
