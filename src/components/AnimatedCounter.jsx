@@ -40,7 +40,7 @@ export function AnimatedStats() {
   return (
     <section className="relative py-16 overflow-hidden">
       {/* Subtle background effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-purple-50 dark:from-blue-950/20 dark:via-transparent dark:to-purple-950/20"></div>
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-cyan-50 dark:from-blue-950/20 dark:via-transparent dark:to-cyan-950/20"></div>
       <div className="absolute inset-0">
         <motion.div
           className="absolute top-10 left-10 w-32 h-32 bg-blue-200/30 dark:bg-blue-800/20 rounded-full blur-xl"
@@ -55,7 +55,7 @@ export function AnimatedStats() {
           }}
         />
         <motion.div
-          className="absolute bottom-10 right-10 w-40 h-40 bg-purple-200/30 dark:bg-purple-800/20 rounded-full blur-xl"
+          className="absolute bottom-10 right-10 w-40 h-40 bg-cyan-200/30 dark:bg-cyan-800/20 rounded-full blur-xl"
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.4, 0.2, 0.4]

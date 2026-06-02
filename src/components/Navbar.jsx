@@ -53,11 +53,11 @@ export default function Navbar() {
       icon: User,
       color: "from-green-500 to-emerald-500"
     },
-    { 
-      path: "/projects", 
-      label: "Projects", 
+    {
+      path: "/projects",
+      label: "Projects",
       icon: FolderOpen,
-      color: "from-purple-500 to-pink-500"
+      color: "from-blue-500 to-cyan-500"
     },
     { 
       path: "/contact", 
@@ -104,7 +104,7 @@ export default function Navbar() {
             </motion.div> */}
             {/* <Link
               to="/"
-              className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 bg-clip-text text-transparent"
+              className="text-2xl font-bold bg-gradient-to-r from-blue-600 via-cyan-600 to-emerald-600 bg-clip-text text-transparent"
             >
               Portfolio
             </Link> */}

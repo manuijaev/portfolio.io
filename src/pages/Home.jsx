@@ -65,7 +65,7 @@ export default function Home() {
             <GlassButton
               as={Link}
               to="/projects"
-              color="slate"
+              color="blue"
               size="lg"
               onClick={triggerParticles}
             >

@@ -110,7 +110,7 @@ export default function SkillsManagerPanel() {
                 <GlassButton
                   type="button"
                   onClick={() => setSkillsDraft((prev) => prev.filter((_, idx) => idx !== index))}
-                  color="rose"
+                  color="blue"
                   size="sm"
                 >
                   Delete
@@ -138,7 +138,7 @@ export default function SkillsManagerPanel() {
             </div>
           ))}
         </div>
-        <GlassButton onClick={() => updateSkills(skillsDraft.map((skill) => ({ ...skill, experience: Number(skill.experience) || 0 })))} color="emerald" size="md" className="w-full" icon={Save}>
+        <GlassButton onClick={() => updateSkills(skillsDraft.map((skill) => ({ ...skill, experience: Number(skill.experience) || 0 })))} color="blue" size="md" className="w-full" icon={Save}>
           Save Skills
         </GlassButton>
       </div>

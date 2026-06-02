@@ -165,7 +165,7 @@ export default function Contact() {
   return (
     <section id="contact" className="section-shell py-12 sm:py-16">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">
           Get In Touch
         </h2>
         <p className={`copy-block text-base sm:text-lg mb-8 sm:mb-12 md:mx-auto ${
@@ -212,15 +212,15 @@ export default function Contact() {
                   value={formData.name}
                   onChange={handleChange}
                   required
-                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 text-base rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 ${
+                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 text-base rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ${
                     theme === "dark"
-                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500"
-                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-indigo-500"
+                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500"
                   }`}
                   placeholder="Enter your name"
                   whileFocus={{
                     scale: 1.02,
-                    boxShadow: "0 0 0 3px rgba(99, 102, 241, 0.1)"
+                    boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)"
                   }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 />
@@ -248,15 +248,15 @@ export default function Contact() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 text-base rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 ${
+                  className={`w-full px-3 sm:px-4 py-3 sm:py-4 text-base rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 ${
                     theme === "dark"
-                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500"
-                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-indigo-500"
+                      ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                      : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500"
                   }`}
                   placeholder="your.email@example.com"
                   whileFocus={{
                     scale: 1.02,
-                    boxShadow: "0 0 0 3px rgba(99, 102, 241, 0.1)"
+                    boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)"
                   }}
                   transition={{ type: "spring", stiffness: 300, damping: 20 }}
                 />
@@ -301,15 +301,15 @@ export default function Contact() {
                 onChange={handleChange}
                 required
                 maxLength="500"
-                className={`w-full px-3 sm:px-4 py-3 sm:py-4 text-base rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all duration-300 resize-none ${
+                className={`w-full px-3 sm:px-4 py-3 sm:py-4 text-base rounded-lg border-2 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-300 resize-none ${
                   theme === "dark"
-                    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-indigo-500"
-                    : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-indigo-500"
+                    ? "bg-gray-700 border-gray-600 text-white placeholder-gray-400 focus:border-blue-500"
+                    : "bg-white border-gray-300 text-gray-900 placeholder-gray-500 focus:border-blue-500"
                 }`}
                 placeholder="Tell me about your project, ideas, or just say hello..."
                 whileFocus={{
                   scale: 1.01,
-                  boxShadow: "0 0 0 3px rgba(99, 102, 241, 0.1)"
+                  boxShadow: "0 0 0 3px rgba(59, 130, 246, 0.1)"
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 20 }}
               />
@@ -318,7 +318,7 @@ export default function Contact() {
             <GlassButton
               type="submit"
               disabled={isSending}
-              color="violet"
+              color="blue"
               size="lg"
               className="w-full"
             >
@@ -334,7 +334,7 @@ export default function Contact() {
           <p>Prefer a direct email?</p>
           <a 
             href="mailto:kenyaniemmanuel44@gmail.com"
-            className="text-indigo-500 hover:text-indigo-600 font-medium transition-colors"
+            className="text-blue-500 hover:text-blue-600 font-medium transition-colors"
           >
             kenyaniemmanuel44@gmail.com
           </a>

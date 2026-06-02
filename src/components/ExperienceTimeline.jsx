@@ -43,7 +43,7 @@ const ExperienceTimeline = () => {
     switch (type) {
       case "work": return "bg-blue-500";
       case "education": return "bg-green-500";
-      case "milestone": return "bg-purple-500";
+      case "milestone": return "bg-amber-500";
       default: return "bg-gray-500";
     }
   };
@@ -100,7 +100,7 @@ const ExperienceTimeline = () => {
               {item.details && (
                 <button
                   onClick={() => toggleExpanded(index)}
-                  className="text-indigo-600 dark:text-indigo-400 hover:underline text-sm"
+                  className="text-blue-600 dark:text-blue-400 hover:underline text-sm"
                 >
                   {expandedItems.has(index) ? "Hide details" : "Show details"}
                 </button>

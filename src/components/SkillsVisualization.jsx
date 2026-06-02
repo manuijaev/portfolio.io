@@ -90,7 +90,7 @@ export default function SkillsVisualization() {
                   </div>
                   <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 overflow-hidden">
                     <MotionDiv
-                      className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full"
+                      className="h-full bg-gradient-to-r from-blue-500 to-cyan-600 rounded-full"
                       initial={{ width: 0 }}
                       whileInView={{ width: `${skill.experience}%` }}
                       viewport={{ once: true }}

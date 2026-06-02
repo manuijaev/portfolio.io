@@ -23,7 +23,7 @@ function SafePanel({ children, fallback = "This panel failed to load." }) {
         <GlassButton
           type="button"
           onClick={() => setError(null)}
-          color="rose"
+          color="blue"
           size="sm"
           icon={RefreshCw}
         >
@@ -43,11 +43,11 @@ function SafePanel({ children, fallback = "This panel failed to load." }) {
 }
 
 const TABS = [
-  { id: "text", label: "Text Content", icon: FileText, color: "from-emerald-500 to-teal-500" },
-  { id: "stats", label: "Stats", icon: BarChart3, color: "from-cyan-500 to-blue-500" },
-  { id: "about", label: "About", icon: FileText, color: "from-violet-500 to-purple-500" },
-  { id: "skills", label: "Skills", icon: BarChart3, color: "from-amber-500 to-orange-500" },
-  { id: "projects", label: "Projects", icon: FolderKanban, color: "from-rose-500 to-pink-500" },
+  { id: "text", label: "Text Content", icon: FileText, color: "from-blue-500 to-cyan-500" },
+  { id: "stats", label: "Stats", icon: BarChart3, color: "from-blue-500 to-cyan-500" },
+  { id: "about", label: "About", icon: FileText, color: "from-blue-500 to-cyan-500" },
+  { id: "skills", label: "Skills", icon: BarChart3, color: "from-blue-500 to-cyan-500" },
+  { id: "projects", label: "Projects", icon: FolderKanban, color: "from-blue-500 to-cyan-500" },
 ];
 
 const containerVariants = {
@@ -164,10 +164,10 @@ export default function AdminDashboard() {
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Manage your portfolio content in one workspace.</p>
             </motion.div>
             <motion.div className="flex flex-wrap gap-2" variants={itemVariants}>
-              <GlassButton onClick={handleExport} color="emerald" size="sm" icon={Save}>Export</GlassButton>
+              <GlassButton onClick={handleExport} color="blue" size="sm" icon={Save}>Export</GlassButton>
               <GlassButton onClick={() => importInputRef.current?.click()} color="blue" size="sm" icon={RotateCcw}>Import</GlassButton>
-              <GlassButton onClick={handleReset} color="amber" size="sm" icon={RotateCcw}>Reset</GlassButton>
-              <GlassButton onClick={handleLogout} color="slate" size="sm" icon={LogOut}>Logout</GlassButton>
+              <GlassButton onClick={handleReset} color="blue" size="sm" icon={RotateCcw}>Reset</GlassButton>
+              <GlassButton onClick={handleLogout} color="blue" size="sm" icon={LogOut}>Logout</GlassButton>
               <input ref={importInputRef} type="file" accept="application/json" onChange={handleImport} className="hidden" />
             </motion.div>
           </div>

@@ -92,7 +92,7 @@ export default function TextContentPanel() {
               </div>
             </div>
           </div>
-          <GlassButton onClick={() => updateHero({ headingName: heroName, bio: heroBio, profileImage, typewriterRoles: heroRolesText.split("\n").map((r) => r.trim()).filter(Boolean) })} color="emerald" size="md" className="w-full" icon={Save}>
+          <GlassButton onClick={() => updateHero({ headingName: heroName, bio: heroBio, profileImage, typewriterRoles: heroRolesText.split("\n").map((r) => r.trim()).filter(Boolean) })} color="blue" size="md" className="w-full" icon={Save}>
             Save Hero
           </GlassButton>
         </div>
@@ -179,7 +179,7 @@ export default function TextContentPanel() {
                       />
                       <GlassButton
                         onClick={() => setAboutAchievementsDraft(aboutAchievementsDraft.filter((_, idx) => idx !== index))}
-                        color="rose"
+                        color="blue"
                         size="sm"
                       >
                         Delete
@@ -188,7 +188,7 @@ export default function TextContentPanel() {
                   ))}
                 </div>
               </div>
-              <GlassButton onClick={() => updateAbout({ heading: aboutHeading.trim() || "About Me", intro: aboutIntro.trim(), story: aboutStory.trim(), achievements: aboutAchievementsDraft.map((item) => String(item || "").trim()).filter(Boolean) })} color="emerald" size="md" className="w-full" icon={Save}>
+              <GlassButton onClick={() => updateAbout({ heading: aboutHeading.trim() || "About Me", intro: aboutIntro.trim(), story: aboutStory.trim(), achievements: aboutAchievementsDraft.map((item) => String(item || "").trim()).filter(Boolean) })} color="blue" size="md" className="w-full" icon={Save}>
                 Save About
               </GlassButton>
             </motion.div>

@@ -216,7 +216,7 @@ export default function ProjectsManagerPanel() {
               setProjectForm(getEmptyProject());
             }
           }}
-          color="emerald"
+          color="blue"
           size="sm"
           icon={showProjectForm ? ChevronUp : PlusCircle}
         >
@@ -451,7 +451,7 @@ export default function ProjectsManagerPanel() {
                         videoPresentation: { src: "", name: "", type: "", size: 0 },
                       }))
                     }
-                    color="rose"
+                    color="blue"
                     size="sm"
                     className="mt-2"
                   >
@@ -462,10 +462,10 @@ export default function ProjectsManagerPanel() {
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2">
-              <GlassButton onClick={handleProjectSave} disabled={projectSaveState.isSaving} color="emerald" size="md" className="w-full" icon={editingProjectId ? Save : PlusCircle}>
+              <GlassButton onClick={handleProjectSave} disabled={projectSaveState.isSaving} color="blue" size="md" className="w-full" icon={editingProjectId ? Save : PlusCircle}>
                 {projectSaveState.isSaving ? "Saving..." : editingProjectId ? "Update Project" : "Add Project"}
               </GlassButton>
-              <GlassButton onClick={() => { setEditingProjectId(null); setProjectForm(getEmptyProject()); setShowProjectForm(false); }} color="slate" size="md" className="w-full" icon={XCircle}>
+              <GlassButton onClick={() => { setEditingProjectId(null); setProjectForm(getEmptyProject()); setShowProjectForm(false); }} color="blue" size="md" className="w-full" icon={XCircle}>
                 Clear Form
               </GlassButton>
             </div>
@@ -524,7 +524,7 @@ export default function ProjectsManagerPanel() {
               <GlassButton onClick={() => startEditProject(project)} color="blue" size="sm" className="w-full">
                 Edit
               </GlassButton>
-              <GlassButton onClick={async () => { if (confirm("Delete this project?")) { const result = await deleteProject(project.id); if (result?.success) { if (editingProjectId === project.id) { setEditingProjectId(null); setProjectForm(getEmptyProject()); setShowProjectForm(false); } } else { alert(result?.message || "Failed to delete project."); } } }} color="rose" size="sm" className="w-full" icon={Trash2} iconPosition="right">
+              <GlassButton onClick={async () => { if (confirm("Delete this project?")) { const result = await deleteProject(project.id); if (result?.success) { if (editingProjectId === project.id) { setEditingProjectId(null); setProjectForm(getEmptyProject()); setShowProjectForm(false); } } else { alert(result?.message || "Failed to delete project."); } } }} color="blue" size="sm" className="w-full" icon={Trash2} iconPosition="right">
                 Delete
               </GlassButton>
             </div>

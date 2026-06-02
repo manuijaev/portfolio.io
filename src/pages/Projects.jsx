@@ -173,7 +173,7 @@ export default function Projects() {
                     <GlassButton
                       as={Link}
                       to={`/projects/${project.id}/case-study`}
-                      color="violet"
+                      color="blue"
                       size="md"
                       className="w-full"
                     >
