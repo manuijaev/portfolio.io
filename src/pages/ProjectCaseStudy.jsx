@@ -1,7 +1,7 @@
-import { createElement } from "react";
+import { createElement, useState } from "react";
 import { Link, Navigate, useParams } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, CheckCircle2, Clapperboard, Cpu, Layers, Target, ExternalLink } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ChevronDown, ChevronUp, Clapperboard, Cpu, Layers, Target, ExternalLink } from "lucide-react";
 import { usePortfolio } from "../context/PortfolioContext";
 import { buildCaseStudy, formatBytes, getProjectLink, getProjectVideo } from "../utils/caseStudy";
 

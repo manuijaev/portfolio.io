@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Pencil, Save, ChevronDown, ChevronUp } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
 
