@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { usePortfolio } from "../context/PortfolioContext";
+import GlassButton from "../components/GlassButton";
 
 const MotionH2 = motion.h2;
 const MotionDiv = motion.div;
@@ -159,24 +160,25 @@ export default function Projects() {
                   </MotionP>
 
                   <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-2 gap-2">
-                    <MotionA
+                    <GlassButton
                       href={project.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      className="inline-block px-4 py-2 sm:px-5 sm:py-2.5 bg-blue-600 text-white text-sm sm:text-base font-medium rounded-lg hover:bg-blue-700 transition-colors text-center"
+                      color="blue"
+                      size="md"
+                      className="w-full"
                     >
                       Visit Site
-                    </MotionA>
-                    <MotionDiv whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-                      <Link
-                        to={`/projects/${project.id}/case-study`}
-                        className="inline-block w-full px-4 py-2 sm:px-5 sm:py-2.5 bg-slate-800 text-white text-sm sm:text-base font-medium rounded-lg hover:bg-slate-900 transition-colors text-center"
-                      >
-                        Case Study
-                      </Link>
-                    </MotionDiv>
+                    </GlassButton>
+                    <GlassButton
+                      as={Link}
+                      to={`/projects/${project.id}/case-study`}
+                      color="violet"
+                      size="md"
+                      className="w-full"
+                    >
+                      Case Study
+                    </GlassButton>
                   </div>
                 </div>
               </MotionDiv>

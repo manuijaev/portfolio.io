@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Save } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
+import GlassButton from "../../components/GlassButton";
 
 const MotionDiv = motion.div;
 
@@ -45,15 +46,9 @@ export default function StatsPanel() {
             />
           </div>
         ))}
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => updateStats(statsDraft.map((item) => ({ ...item, value: Number(item.value) || 0 })))}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-700"
-        >
-          <Save size={16} />
+        <GlassButton onClick={() => updateStats(statsDraft.map((item) => ({ ...item, value: Number(item.value) || 0 })))} color="blue" size="md" className="w-full" icon={Save}>
           Save Stats
-        </motion.button>
+        </GlassButton>
       </div>
     </MotionDiv>
   );

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { PlusCircle, Save } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
+import GlassButton from "../../components/GlassButton";
 
 const SKILL_CATEGORIES = ["Frontend", "Backend", "Database", "Cloud", "DevOps", "Mobile", "AI/ML", "Tools", "General"];
 
@@ -75,16 +76,9 @@ export default function SkillsManagerPanel() {
             className="w-full accent-emerald-600"
           />
         </div>
-        <motion.button
-          type="button"
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={addSkillDraft}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-cyan-600 py-2.5 text-sm font-semibold text-white transition hover:bg-cyan-700"
-        >
-          <PlusCircle size={16} />
+        <GlassButton type="button" onClick={addSkillDraft} color="blue" size="md" className="w-full" icon={PlusCircle}>
           Add Skill
-        </motion.button>
+        </GlassButton>
         <div className="space-y-2 max-h-72 overflow-auto pr-1">
           {skillsDraft.map((skill, index) => (
             <div key={skill.id || index} className="rounded-xl border border-slate-300/90 dark:border-slate-600 p-3 bg-white/80 dark:bg-slate-950/50">
@@ -113,15 +107,14 @@ export default function SkillsManagerPanel() {
                     </option>
                   ))}
                 </select>
-                <motion.button
+                <GlassButton
                   type="button"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
                   onClick={() => setSkillsDraft((prev) => prev.filter((_, idx) => idx !== index))}
-                  className="rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-700"
+                  color="rose"
+                  size="sm"
                 >
                   Delete
-                </motion.button>
+                </GlassButton>
               </div>
               <div className="mt-2">
                 <div className="flex items-center justify-between text-xs text-slate-600 dark:text-slate-300 mb-1">
@@ -145,15 +138,9 @@ export default function SkillsManagerPanel() {
             </div>
           ))}
         </div>
-        <motion.button
-          whileHover={{ scale: 1.02 }}
-          whileTap={{ scale: 0.98 }}
-          onClick={() => updateSkills(skillsDraft.map((skill) => ({ ...skill, experience: Number(skill.experience) || 0 })))}
-          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
-        >
-          <Save size={16} />
+        <GlassButton onClick={() => updateSkills(skillsDraft.map((skill) => ({ ...skill, experience: Number(skill.experience) || 0 })))} color="emerald" size="md" className="w-full" icon={Save}>
           Save Skills
-        </motion.button>
+        </GlassButton>
       </div>
     </MotionDiv>
   );

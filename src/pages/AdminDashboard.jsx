@@ -1,10 +1,11 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { BarChart3, FileText, FolderKanban, LogOut, RotateCcw, Save, Trash2, XCircle, Pencil, PlusCircle, ImagePlus, Link2, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
+import { BarChart3, FileText, FolderKanban, LogOut, RotateCcw, Save, Trash2, XCircle, Pencil, PlusCircle, ImagePlus, Link2, ExternalLink, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
 import { usePortfolio } from "../context/PortfolioContext";
 import { defaultPortfolioData } from "../data/portfolioDefaults";
 import { getProjectLink } from "../utils/caseStudy";
+import GlassButton from "../components/GlassButton";
 import TextContentPanel from "./admin/TextContentPanel";
 import StatsPanel from "./admin/StatsPanel";
 import AboutManagerPanel from "./admin/AboutManagerPanel";
@@ -19,13 +20,15 @@ function SafePanel({ children, fallback = "This panel failed to load." }) {
       <div className="rounded-xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800 dark:border-rose-800 dark:bg-rose-950/40 dark:text-rose-200">
         <p className="font-semibold">Panel error</p>
         <p className="mt-1">{fallback}</p>
-        <button
+        <GlassButton
           type="button"
           onClick={() => setError(null)}
-          className="mt-3 rounded-lg bg-rose-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-rose-700"
+          color="rose"
+          size="sm"
+          icon={RefreshCw}
         >
           Retry
-        </button>
+        </GlassButton>
       </div>
     );
   }
@@ -161,23 +164,10 @@ export default function AdminDashboard() {
               <p className="mt-2 text-sm text-slate-600 dark:text-slate-300">Manage your portfolio content in one workspace.</p>
             </motion.div>
             <motion.div className="flex flex-wrap gap-2" variants={itemVariants}>
-              {[
-                { onClick: handleExport, icon: Save, label: "Export", className: "bg-emerald-600 hover:bg-emerald-700" },
-                { onClick: () => importInputRef.current?.click(), icon: RotateCcw, label: "Import", className: "bg-cyan-600 hover:bg-cyan-700" },
-                { onClick: handleReset, icon: RotateCcw, label: "Reset", className: "bg-amber-500 hover:bg-amber-600" },
-                { onClick: handleLogout, icon: LogOut, label: "Logout", className: "bg-slate-800 hover:bg-slate-900" },
-              ].map((btn, idx) => (
-                <motion.button
-                  key={idx}
-                  onClick={btn.onClick}
-                  whileHover={{ scale: 1.05, y: -2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white transition ${btn.className}`}
-                >
-                  <btn.icon size={16} />
-                  {btn.label}
-                </motion.button>
-              ))}
+              <GlassButton onClick={handleExport} color="emerald" size="sm" icon={Save}>Export</GlassButton>
+              <GlassButton onClick={() => importInputRef.current?.click()} color="blue" size="sm" icon={RotateCcw}>Import</GlassButton>
+              <GlassButton onClick={handleReset} color="amber" size="sm" icon={RotateCcw}>Reset</GlassButton>
+              <GlassButton onClick={handleLogout} color="slate" size="sm" icon={LogOut}>Logout</GlassButton>
               <input ref={importInputRef} type="file" accept="application/json" onChange={handleImport} className="hidden" />
             </motion.div>
           </div>
@@ -201,20 +191,15 @@ export default function AdminDashboard() {
 
         <motion.div variants={itemVariants} className="flex flex-wrap gap-2">
           {TABS.map((tab) => (
-            <motion.button
+            <GlassButton
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              whileHover={{ scale: 1.05, y: -2 }}
-              whileTap={{ scale: 0.95 }}
-              className={`inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition ${
-                activeTab === tab.id
-                  ? `bg-gradient-to-r ${tab.color} text-white shadow-lg`
-                  : "bg-white/80 text-slate-700 hover:bg-slate-100 dark:bg-slate-900/80 dark:text-slate-300 dark:hover:bg-slate-800"
-              }`}
+              color={activeTab === tab.id ? tab.color.split("-")[0] : "slate"}
+              size="sm"
+              icon={tab.icon}
             >
-              <tab.icon size={16} />
               {tab.label}
-            </motion.button>
+            </GlassButton>
           ))}
         </motion.div>
 

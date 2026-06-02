@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { useTheme } from "../context/ThemeContext";
 import { motion } from "framer-motion";
 import emailjs from "@emailjs/browser";
+import GlassButton from "../components/GlassButton";
 
 export default function Contact() {
   const { theme } = useTheme();
@@ -314,78 +315,15 @@ export default function Contact() {
               />
             </motion.div>
 
-            <motion.button
+            <GlassButton
               type="submit"
               disabled={isSending}
-              className={`w-full py-3 sm:py-4 px-4 sm:px-6 rounded-lg font-semibold text-white text-base sm:text-lg transition-all duration-300 relative overflow-hidden touch-manipulation ${
-                isSending
-                  ? "bg-gray-400 cursor-not-allowed"
-                  : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 shadow-lg hover:shadow-xl active:scale-95"
-              }`}
-              whileHover={!isSending ? {
-                scale: 1.02,
-                boxShadow: "0 20px 25px -5px rgba(99, 102, 241, 0.4), 0 10px 10px -5px rgba(99, 102, 241, 0.2)"
-              } : {}}
-              whileTap={!isSending ? { scale: 0.98 } : {}}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.4, type: "spring", stiffness: 300 }}
+              color="violet"
+              size="lg"
+              className="w-full"
             >
-              {/* Animated background gradient */}
-              {!isSending && (
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-purple-600 to-pink-600 opacity-0"
-                  whileHover={{ opacity: 1 }}
-                  transition={{ duration: 0.3 }}
-                />
-              )}
-
-              {/* Button content */}
-              <motion.div
-                className="relative z-10 flex items-center justify-center"
-                animate={isSending ? { scale: 0.95 } : { scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                {isSending ? (
-                  <motion.div
-                    className="flex items-center justify-center"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <motion.div
-                      className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent mr-3"
-                      animate={{ rotate: 360 }}
-                      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    />
-                    <motion.span
-                      animate={{ opacity: [1, 0.5, 1] }}
-                      transition={{ duration: 1.5, repeat: Infinity }}
-                    >
-                      Sending Message...
-                    </motion.span>
-                  </motion.div>
-                ) : (
-                  <motion.span
-                    className="flex items-center gap-2"
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ type: "spring", stiffness: 400 }}
-                  >
-                    Send Message
-                  </motion.span>
-                )}
-              </motion.div>
-
-              {/* Success ripple effect */}
-              {sendStatus === 'success' && (
-                <motion.div
-                  className="absolute inset-0 bg-green-500 rounded-lg"
-                  initial={{ scale: 0, opacity: 0.8 }}
-                  animate={{ scale: 2, opacity: 0 }}
-                  transition={{ duration: 0.6 }}
-                />
-              )}
-            </motion.button>
+              {isSending ? "Sending..." : "Send Message"}
+            </GlassButton>
           </form>
         </div>
 

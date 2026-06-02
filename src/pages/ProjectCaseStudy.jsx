@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, CheckCircle2, ChevronDown, ChevronUp, Clapperboard, Cpu, Layers, Target, ExternalLink } from "lucide-react";
 import { usePortfolio } from "../context/PortfolioContext";
 import { buildCaseStudy, formatBytes, getProjectLink, getProjectVideo } from "../utils/caseStudy";
+import GlassButton from "../components/GlassButton";
 
 const MotionDiv = motion.div;
 
@@ -61,14 +62,15 @@ export default function ProjectCaseStudy() {
 
           <div className="mt-6">
             {projectLink ? (
-              <a
+              <GlassButton
                 href={projectLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center rounded-lg bg-cyan-600 hover:bg-cyan-700 text-white text-sm font-semibold px-4 py-2"
+                color="blue"
+                size="md"
               >
                 Visit Live Project
-              </a>
+              </GlassButton>
             ) : (
               <p className="text-sm text-amber-700 dark:text-amber-300">
                 Add a valid project URL from the admin dashboard to enable the live preview.
@@ -147,15 +149,16 @@ export default function ProjectCaseStudy() {
                 />
               ) : isExternalVideo ? (
                 <div className="flex items-center justify-center rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950/40 p-6">
-                  <a
+                  <GlassButton
                     href={video.src}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-6 py-3 text-white font-semibold hover:bg-cyan-700"
+                    color="blue"
+                    size="md"
+                    icon={ExternalLink}
                   >
-                    <ExternalLink size={18} />
                     Watch Video
-                  </a>
+                  </GlassButton>
                 </div>
               ) : (
                 <video

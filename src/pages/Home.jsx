@@ -6,6 +6,7 @@ import Testimonials from "../components/Testimonials";
 import ParticleEffect from "../components/ParticleEffect";
 import { AnimatedStats } from "../components/AnimatedCounter";
 import { usePortfolio } from "../context/PortfolioContext";
+import GlassButton from "../components/GlassButton";
 
 export default function Home() {
   const [showParticles, setShowParticles] = useState(false);
@@ -51,47 +52,25 @@ export default function Home() {
 
           {/* Buttons */}
           <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center md:justify-start">
-            <motion.a
+            <GlassButton
               href="/projects/kenyani's resume.pdf"
               download
-              className="cta-btn bg-blue-600 text-white group"
-              whileHover={{
-                scale: 1.05,
-                boxShadow: "0 20px 25px -5px rgba(59, 130, 246, 0.4), 0 10px 10px -5px rgba(59, 130, 246, 0.2)"
-              }}
-              whileTap={{ scale: 0.95 }}
+              color="blue"
+              size="lg"
               onClick={triggerParticles}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-blue-500 to-cyan-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                initial={false}
-                whileHover={{ scale: 1.1 }}
-              />
-              <span className="relative z-10 inline-flex items-center justify-center gap-2">
-                Download CV
-              </span>
-            </motion.a>
+              Download CV
+            </GlassButton>
 
-            <motion.div
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 400, damping: 10 }}
+            <GlassButton
+              as={Link}
+              to="/projects"
+              color="slate"
+              size="lg"
+              onClick={triggerParticles}
             >
-              <Link
-                to="/projects"
-                onClick={triggerParticles}
-                className="cta-btn bg-gray-800 text-white group"
-              >
-                <motion.div
-                  className="absolute inset-0 bg-gradient-to-r from-gray-700 to-gray-900 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  whileHover={{ scale: 1.1 }}
-                />
-                <span className="relative z-10 inline-flex items-center justify-center gap-2">
-                  View Projects
-                </span>
-              </Link>
-            </motion.div>
+              View Projects
+            </GlassButton>
           </div>
         </motion.div>
 

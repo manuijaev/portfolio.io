@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { usePortfolio } from "../context/PortfolioContext";
+import GlassButton from "../components/GlassButton";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
@@ -58,13 +59,15 @@ export default function AdminLogin() {
             />
           </div>
           {error && <p className="text-sm text-red-500">{error}</p>}
-          <button
+          <GlassButton
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 transition-colors"
+            color="blue"
+            size="lg"
+            className="w-full"
           >
             {isSubmitting ? "Checking..." : "Access Dashboard"}
-          </button>
+          </GlassButton>
         </form>
       </motion.div>
     </section>

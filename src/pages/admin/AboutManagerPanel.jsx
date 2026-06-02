@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Save, ChevronDown, ChevronUp } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
+import GlassButton from "../../components/GlassButton";
 
 const MotionDiv = motion.div;
 
@@ -92,9 +93,7 @@ export default function AboutManagerPanel() {
                     }
                   }}
                 />
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                <GlassButton
                   onClick={() => {
                     const value = newAchievement.trim();
                     if (value) {
@@ -102,10 +101,11 @@ export default function AboutManagerPanel() {
                       setNewAchievement("");
                     }
                   }}
-                  className="rounded-lg bg-cyan-600 px-3 py-2 text-xs font-semibold text-white hover:bg-cyan-700"
+                  color="blue"
+                  size="sm"
                 >
                   Add
-                </motion.button>
+                </GlassButton>
               </div>
               <div className="space-y-2 max-h-44 overflow-auto pr-1">
                 {aboutAchievementsDraft.map((achievement, index) => (
@@ -117,27 +117,20 @@ export default function AboutManagerPanel() {
                       }
                       className="rounded-lg border border-slate-300/90 dark:border-slate-600 px-3 py-2 bg-white/90 dark:bg-slate-950/60 text-slate-900 dark:text-slate-100 outline-none transition focus:ring-2 focus:ring-emerald-500/60 focus:border-emerald-500"
                     />
-                    <motion.button
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
+                    <GlassButton
                       onClick={() => setAboutAchievementsDraft(aboutAchievementsDraft.filter((_, idx) => idx !== index))}
-                      className="rounded-lg bg-rose-600 px-3 py-2 text-xs font-semibold text-white hover:bg-rose-700"
+                      color="rose"
+                      size="sm"
                     >
                       Delete
-                    </motion.button>
+                    </GlassButton>
                   </div>
                 ))}
               </div>
             </div>
-            <motion.button
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              onClick={() => updateAbout({ heading: aboutHeading.trim() || "About Me", intro: aboutIntro.trim(), story: aboutStory.trim(), achievements: aboutAchievementsDraft.map((item) => String(item || "").trim()).filter(Boolean) })}
-              className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700"
-            >
-              <Save size={16} />
+            <GlassButton onClick={() => updateAbout({ heading: aboutHeading.trim() || "About Me", intro: aboutIntro.trim(), story: aboutStory.trim(), achievements: aboutAchievementsDraft.map((item) => String(item || "").trim()).filter(Boolean) })} color="emerald" size="md" className="w-full" icon={Save}>
               Save About
-            </motion.button>
+            </GlassButton>
           </motion.div>
         )}
       </AnimatePresence>

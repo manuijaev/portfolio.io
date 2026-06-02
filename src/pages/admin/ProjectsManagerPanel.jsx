@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { usePortfolio } from "../../context/PortfolioContext";
 import { getProjectLink } from "../../utils/caseStudy";
+import GlassButton from "../../components/GlassButton";
 
 const PROJECT_TYPES = ["Software", "Dashboard", "Website", "PWA", "Native App", "API", "Other"];
 const TECHNOLOGY_OPTIONS = [
@@ -207,9 +208,7 @@ export default function ProjectsManagerPanel() {
     >
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Projects Manager</h2>
-        <motion.button
-          whileHover={{ scale: 1.05 }}
-          whileTap={{ scale: 0.95 }}
+        <GlassButton
           onClick={() => {
             setShowProjectForm(!showProjectForm);
             if (showProjectForm) {
@@ -217,11 +216,12 @@ export default function ProjectsManagerPanel() {
               setProjectForm(getEmptyProject());
             }
           }}
-          className="inline-flex items-center gap-1 rounded-lg bg-emerald-100 px-3 py-1.5 text-xs font-medium text-emerald-700 hover:bg-emerald-200 dark:bg-emerald-900/40 dark:text-emerald-300 dark:hover:bg-emerald-900/60"
+          color="emerald"
+          size="sm"
+          icon={showProjectForm ? ChevronUp : PlusCircle}
         >
-          {showProjectForm ? <ChevronUp size={14} /> : <PlusCircle size={14} />}
           {showProjectForm ? "Cancel" : "New Project"}
-        </motion.button>
+        </GlassButton>
       </div>
 
       <AnimatePresence>
@@ -428,21 +428,22 @@ export default function ProjectsManagerPanel() {
                     />
                   ) : (
                     <div className="flex items-center justify-center rounded-md bg-slate-100 p-4 dark:bg-slate-800">
-                      <a
+                      <GlassButton
                         href={projectForm.videoPresentation.src}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-2 rounded-lg bg-cyan-600 px-4 py-2 text-sm font-semibold text-white hover:bg-cyan-700"
+                        color="blue"
+                        size="sm"
+                        icon={ExternalLink}
                       >
-                        <ExternalLink size={16} />
                         Watch Video
-                      </a>
+                      </GlassButton>
                     </div>
                   )}
                   <p className="mt-2 text-xs text-cyan-700 dark:text-cyan-300">
                     {projectForm.videoPresentation.name || "Uploaded video"}
                   </p>
-                  <button
+                  <GlassButton
                     type="button"
                     onClick={() =>
                       setProjectForm((prev) => ({
@@ -450,38 +451,23 @@ export default function ProjectsManagerPanel() {
                         videoPresentation: { src: "", name: "", type: "", size: 0 },
                       }))
                     }
-                    className="mt-2 text-xs font-medium text-rose-600 hover:text-rose-700 dark:text-rose-400 dark:hover:text-rose-300"
+                    color="rose"
+                    size="sm"
+                    className="mt-2"
                   >
                     Remove Video
-                  </button>
+                  </GlassButton>
                 </div>
               )}
             </div>
 
             <div className="grid gap-2 sm:grid-cols-2">
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={handleProjectSave}
-                disabled={projectSaveState.isSaving}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 disabled:cursor-not-allowed disabled:bg-emerald-700/70"
-              >
-                {editingProjectId ? <Save size={16} /> : <PlusCircle size={16} />}
+              <GlassButton onClick={handleProjectSave} disabled={projectSaveState.isSaving} color="emerald" size="md" className="w-full" icon={editingProjectId ? Save : PlusCircle}>
                 {projectSaveState.isSaving ? "Saving..." : editingProjectId ? "Update Project" : "Add Project"}
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  setEditingProjectId(null);
-                  setProjectForm(getEmptyProject());
-                  setShowProjectForm(false);
-                }}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-slate-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
-              >
-                <XCircle size={16} />
+              </GlassButton>
+              <GlassButton onClick={() => { setEditingProjectId(null); setProjectForm(getEmptyProject()); setShowProjectForm(false); }} color="slate" size="md" className="w-full" icon={XCircle}>
                 Clear Form
-              </motion.button>
+              </GlassButton>
             </div>
             <AnimatePresence>
               {(projectSaveState.isSaving || projectSaveState.progress > 0) && (
@@ -535,36 +521,12 @@ export default function ProjectsManagerPanel() {
               </div>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-2">
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={() => startEditProject(project)}
-                className="rounded-lg bg-cyan-600 px-3 py-1.5 text-xs sm:text-sm font-medium text-white transition hover:bg-cyan-700"
-              >
+              <GlassButton onClick={() => startEditProject(project)} color="blue" size="sm" className="w-full">
                 Edit
-              </motion.button>
-              <motion.button
-                whileHover={{ scale: 1.03 }}
-                whileTap={{ scale: 0.97 }}
-                onClick={async () => {
-                  if (confirm("Delete this project?")) {
-                    const result = await deleteProject(project.id);
-                    if (result?.success) {
-                      if (editingProjectId === project.id) {
-                        setEditingProjectId(null);
-                        setProjectForm(getEmptyProject());
-                        setShowProjectForm(false);
-                      }
-                    } else {
-                      alert(result?.message || "Failed to delete project.");
-                    }
-                  }
-                }}
-                className="inline-flex items-center justify-center gap-1 rounded-lg bg-rose-600 px-3 py-1.5 text-xs sm:text-sm font-medium text-white transition hover:bg-rose-700"
-              >
-                <Trash2 size={13} />
+              </GlassButton>
+              <GlassButton onClick={async () => { if (confirm("Delete this project?")) { const result = await deleteProject(project.id); if (result?.success) { if (editingProjectId === project.id) { setEditingProjectId(null); setProjectForm(getEmptyProject()); setShowProjectForm(false); } } else { alert(result?.message || "Failed to delete project."); } } }} color="rose" size="sm" className="w-full" icon={Trash2} iconPosition="right">
                 Delete
-              </motion.button>
+              </GlassButton>
             </div>
           </motion.div>
         ))}
