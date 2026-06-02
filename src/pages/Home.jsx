@@ -62,15 +62,19 @@ export default function Home() {
               Download CV
             </GlassButton>
 
-            <GlassButton
-              Component={Link}
-              to="/projects"
-              color="blue"
-              size="lg"
-              onClick={triggerParticles}
+            <motion.div
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="w-full sm:w-auto"
             >
-              View Projects
-            </GlassButton>
+              <Link
+                to="/projects"
+                onClick={triggerParticles}
+                className="flex items-center justify-center gap-2 rounded-2xl border border-blue-400/30 bg-gradient-to-br from-blue-500/20 to-cyan-500/20 px-7 py-3.5 text-lg font-semibold text-blue-700 dark:text-blue-300 backdrop-blur-xl transition-all duration-300 hover:border-blue-400/60"
+              >
+                View Projects
+              </Link>
+            </motion.div>
           </div>
         </motion.div>
 

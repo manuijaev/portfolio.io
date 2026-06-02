@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 
 const glassVariants = {
   idle: {
@@ -111,11 +110,8 @@ export default function GlassButton({
     </>
   );
 
-  const MotionLink = motion(Link);
-  const MotionAnchor = motion.a;
-
   if (Component) {
-    const MotionComponent = motion(Component);
+    const MotionComponent = motion.create(Component);
     return (
       <MotionComponent
         variants={glassVariants}
@@ -129,6 +125,8 @@ export default function GlassButton({
       </MotionComponent>
     );
   }
+
+  const MotionAnchor = motion.a;
 
   if (href) {
     return (
