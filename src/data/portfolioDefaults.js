@@ -12,7 +12,7 @@ export const defaultPortfolioData = {
   hero: {
     headingName: "Emmanuel Kenyani",
     typewriterRoles: [
-      "Junior Software Developer",
+      "Software Developer",
       "Full-Stack Developer",
       "React & Tailwind Specialist",
       "Firebase & Cloud Enthusiast",
@@ -20,13 +20,13 @@ export const defaultPortfolioData = {
       "RESTful API Engineer",
     ],
     bio:
-      "I’m a Junior Software Developer who loves transforming ideas into fast, clean, and interactive digital experiences. I specialize in HTML, CSS, Tailwind, and JavaScript, with strong hands-on experience in React and Firebase. I also work with Python, Django, SQLite, and RESTful API development to build powerful and scalable backend solutions. I’m constantly exploring new technologies and refining my craft to create impactful and user-friendly applications.",
+      "I’m a Software Developer who loves transforming ideas into fast, clean, and interactive digital experiences. I specialize in HTML, CSS, Tailwind, and JavaScript, with strong hands-on experience in React and Firebase. I also work with Python, Django, SQLite, and RESTful API development to build powerful and scalable backend solutions. I’m constantly exploring new technologies and refining my craft to create impactful and user-friendly applications.",
     profileImage: "/projects/me.png",
   },
   about: {
     heading: "About Me",
     intro:
-      "Hi, I’m Emmanuel Kenyani, a passionate Junior Software Developer. I enjoy turning ideas into real-world solutions by leveraging modern technologies. My main focus has been web development, where I have gained hands-on experience with HTML, CSS, TailwindCSS, JavaScript, React, Python, Django, SQLite, and Firebase. My goal is to keep learning and contribute to impactful projects that improve lives.",
+      "Hi, I’m Emmanuel Kenyani, a passionate Software Developer. I enjoy turning ideas into real-world solutions by leveraging modern technologies. My main focus has been web development, where I have gained hands-on experience with HTML, CSS, TailwindCSS, JavaScript, React, Python, Django, SQLite, and Firebase. My goal is to keep learning and contribute to impactful projects that improve lives.",
     story:
       "I build practical products with strong UI clarity and dependable backend behavior. I enjoy owning features end-to-end, from wireframe and architecture decisions to deployment and iteration.",
     achievements: [
