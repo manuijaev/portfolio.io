@@ -37,10 +37,10 @@ export const defaultPortfolioData = {
     ],
   },
   stats: [
-    { label: "Projects Completed", value: 8, suffix: "+" },
+    { label: "Projects Completed", value: 7, suffix: "+" },
     { label: "Happy Clients", value: 1, suffix: "+" },
     { label: "Years Experience", value: 2, suffix: "+" },
-    { label: "Technologies", value: 10, suffix: "+" },
+    { label: "Technologies", value: 16, suffix: "+" },
   ],
   skills: [
     { id: 1, name: "React", category: "Frontend", experience: 86 },
@@ -53,6 +53,12 @@ export const defaultPortfolioData = {
     { id: 8, name: "PostgreSQL", category: "Database", experience: 68 },
     { id: 9, name: "Firebase", category: "Cloud", experience: 78 },
     { id: 10, name: "Git & GitHub", category: "Tools", experience: 88 },
+    { id: 11, name: "MySQL", category: "Database", experience: 65 },
+    { id: 12, name: "MongoDB", category: "Database", experience: 62 },
+    { id: 13, name: "Framer motion", category: "Frontend", experience: 70 },
+    { id: 14, name: "Next.js", category: "Frontend", experience: 68 },
+    { id: 15, name: "Websockets", category: "Backend", experience: 60 },
+    { id: 16, name: "UI/UX", category: "Design", experience: 75 },
   ],
   projects: [
     {
@@ -111,6 +117,88 @@ export const defaultPortfolioData = {
       link: "https://patrolscan.vercel.app/admin-login",
       technologies: ["Node.js", "React.js"],
       type: "Dashboard",
+    },
+
+    {
+      id: 5,
+      title: "Visitor attendance system",
+      image: "/projects/visitor.png",
+      description:
+        "The Smart Appointment Booking System is a role-based PWA for handling visitor/staff appointments end-to-end. Visitors submit requests through a guided multi-step form, staff manage and respond from a dashboard, and admins control departments, divisions, staff accounts, and appointment assignments from an admin dashboard. The system uses JWT-secured APIs and multi-channel notifications (push, email, SMS) to keep everyone updated in near real time.",
+      link: "smart-appointment-dashboard-iota.vercel.app",
+      technologies: ["React", "Python", "Django", "PostgreSQL", "Firebase", "EmailJs"],
+      type: "Website",
+      caseStudy: {
+        problem:
+          "Organizations handling appointments manually face delayed responses, poor visibility, and inconsistent communication between visitors, staff, and administrators.",
+        approach:
+          "Built a full-stack web app with:\n\n-Visitor flow for structured appointment requests\n-Staff workspace for accepting, rescheduling, or declining requests\n-Admin control center for organizational setup and oversight\n-Secure JWT auth with role-based access\n-Notification stack (FCM + Email + SMS) and periodic dashboard refresh",
+        outcome:
+          "-Faster appointment routing and response turnaround\n-Better transparency for visitors and teams\n-Centralized administrative control\n-Improved responsiveness through PWA behavior and real-time alerts",
+        architecture:
+          "-React PWA frontend handles UI, routing, auth state, and API calls\n-Django REST API handles business logic, validation, auth, and notifications\n-PostgreSQL stores users, departments/divisions, and appointments\n-Notification services fan out updates via FCM, email, and SMS\n-Dashboards refresh every ~15 seconds, with push used for immediate alerts",
+        challenges: [
+          "Ensuring real-time reliability across polling + push notifications",
+          "Managing JWT refresh and session consistency across tabs/devices",
+          "Maintaining strict data integrity (department/division/staff relationships)",
+          "Handling fallback behavior when external notification providers fail",
+          "Balancing offline/PWA caching with always-fresh operational data",
+        ],
+      },
+      videoPresentation: { src: "", name: "", type: "", size: 0 },
+    },
+    {
+      id: 6,
+      title: "Security Gate management system",
+      image: "/projects/security.png",
+      description:
+        "Security Gate Management is a full-stack web application for controlling and tracking people/vehicle movement in a secure facility (warehouse/campus). It centralizes visitor intake, vehicle entry, delivery logs, yard exits, repossessed vehicles, staff/department management, and role-based dashboards for guards, supervisors, and admins.",
+      link: "security-gate-manegement-system.vercel.app",
+      technologies: ["React", "Node.js", "Express.js", "PostgreSQL", "JWT"],
+      type: "Dashboard",
+      caseStudy: {
+        problem:
+          "Security teams were handling gate operations across scattered logs and manual records, making it hard to:\n\n-enforce role-based access,\n-monitor who/what is currently inside,\n-track complete movement history,\n-produce reliable operational reports quickly",
+        approach:
+          "Built a single-repo platform with:\n\n-unified movement APIs (visitors, vehicle_entries, deliveries, yard_exits, repossessed_vehicles),\n-role-aware UI workflows for guard/supervisor/admin,\n-daily dashboard + analytics endpoints,\n-report exports (CSV/Excel/PDF),\n-alerts for overdue visitors and vehicles still inside,\n-PostgreSQL schema with constraints and idempotent startup initialization.",
+        outcome:
+          "-Centralized and searchable gate records in one system.\n-Faster daily operations through specialized role dashboards and quick-entry forms.\n-Better oversight via real-time summaries, notifications, and exportable reports for audit/compliance workflows.",
+        architecture:
+          "-Frontend (React SPA): UI, forms, filters, tables, exports, session timeout handling.\n-API Layer (Express): authentication, authorization, CRUD + reporting endpoints.\n-Data Layer (PostgreSQL): normalized tables for users, departments, staff, and all movement entities.\n-Deployment Model: can run split (frontend + API) in dev, and backend serves built SPA in production.",
+        challenges: [
+          "Key challenge was unifying multiple operational domains into one consistent movement timeline while enforcing role permissions and maintaining operational speed.",
+          "A second challenge is security hardening for production (current codebase stores plaintext passwords, so password hashing and stronger session controls are a required next step).",
+        ],
+      },
+      videoPresentation: { src: "", name: "", type: "", size: 0 },
+    },
+    {
+      id: 7,
+      title: "SkyWorld Survey Platform",
+      image: "/projects/skyworld.png",
+      description:
+        "A full-stack survey management platform built for a technical assessment, spanning web, mobile, and API layers in a single monorepo. Admins can create surveys with multiple question types, while respondents complete surveys through a dynamic, stepped form with review-before-submit and multipart XML submission. Includes a PostgreSQL-backed REST API with full XML request/response support, a responsive Next.js web app installable as a PWA, and a native Android app packaged as a Trusted Web Activity (TWA) with a signed APK release.",
+      link: "https://survey-platform-lemon-one.vercel.app",
+      technologies: ["Next.js", "React", "TypeScript", "PWA", "Java", "Spring Boot", "PostgreSQL", "REST API"],
+      type: "Website",
+      caseStudy: {
+        problem:
+          "Sky World needed a survey platform where admins could build and manage dynamic surveys and respondents could complete them seamlessly across web and mobile, with certificates generated on completion. The brief also required XML-based REST APIs rather than JSON.",
+        approach:
+          "Structured the project as a monorepo with separated backend, frontend, database, and mobile layers. Built the API in Spring Boot with Jackson XML for serialization, modeled the schema in PostgreSQL with Flyway migrations, and built a stepped survey form in Next.js with review and multipart submission. Wrapped the production PWA in a Trusted Web Activity (TWA) via Bubblewrap to ship a signed Android APK from the same codebase.",
+        outcome:
+          "Delivered a fully compliant implementation covering database design, a complete XML REST API, an admin dashboard with CRUD and paginated/filterable response management, a public survey flow, and three install paths for mobile (APK, Android PWA, iOS PWA).",
+        architecture:
+          "Three-tier monorepo: PostgreSQL database layer, a Spring Boot REST API using XML for all request/response bodies, and a Next.js/React frontend serving both the admin dashboard and public survey flow. The mobile app is a TWA wrapping the deployed PWA rather than a separate codebase.",
+        challenges: [
+          "Implementing XML (not JSON) as the API's request/response format with Jackson XML",
+          "Designing a dynamic, multi-step survey form that adapts its inputs per question type",
+          "Handling multipart form submissions (including file uploads) within an XML API contract",
+          "Packaging a web PWA as a signed, installable native Android app via Bubblewrap/TWA",
+          "Managing ephemeral disk storage for certificate files on Render's free tier",
+        ],
+      },
+      videoPresentation: { src: "", name: "", type: "", size: 0 },
     },
   ],
 };

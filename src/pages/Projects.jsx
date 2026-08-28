@@ -199,7 +199,7 @@ export default function Projects() {
           transition={{ duration: 0.6, delay: 0.4 }}
         >
           <p className="text-gray-600 dark:text-gray-400 text-sm">
-            💡 Tap on projects to visit live sites
+             Tap on projects to visit live sites
           </p>
         </MotionDiv>
       </div>
