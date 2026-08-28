@@ -125,7 +125,7 @@ export const defaultPortfolioData = {
       image: "/projects/visitor.png",
       description:
         "The Smart Appointment Booking System is a role-based PWA for handling visitor/staff appointments end-to-end. Visitors submit requests through a guided multi-step form, staff manage and respond from a dashboard, and admins control departments, divisions, staff accounts, and appointment assignments from an admin dashboard. The system uses JWT-secured APIs and multi-channel notifications (push, email, SMS) to keep everyone updated in near real time.",
-      link: "smart-appointment-dashboard-iota.vercel.app",
+      link: "https://smart-appointment-dashboard-iota.vercel.app/",
       technologies: ["React", "Python", "Django", "PostgreSQL", "Firebase", "EmailJs"],
       type: "Website",
       caseStudy: {
@@ -153,7 +153,7 @@ export const defaultPortfolioData = {
       image: "/projects/security.png",
       description:
         "Security Gate Management is a full-stack web application for controlling and tracking people/vehicle movement in a secure facility (warehouse/campus). It centralizes visitor intake, vehicle entry, delivery logs, yard exits, repossessed vehicles, staff/department management, and role-based dashboards for guards, supervisors, and admins.",
-      link: "security-gate-manegement-system.vercel.app",
+      link: "https://security-gate-manegement-system.vercel.app/",
       technologies: ["React", "Node.js", "Express.js", "PostgreSQL", "JWT"],
       type: "Dashboard",
       caseStudy: {
